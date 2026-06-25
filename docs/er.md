@@ -46,6 +46,11 @@
 - `anxiety_before` / `anxiety_after` の **0–100 範囲は入力バリデーションで担保**する。
 - `ExposureRecord.value` は、その記録の所有者と同じ User の UserValue を指す（他人の価値には紐づけない。入力時に検証）。
 
+## インデックス設計（物理設計の補足）
+- 外部キー `user` には既定でインデックスが付く（Django の ForeignKey は `db_index=True` が既定）。一覧取得で「本人のデータだけ」を高速に絞れる。
+- カレンダー（`GET /api/exposures?from=&to=`）は「本人 × `done_at` の範囲」で検索するため、`(user, done_at)` の複合インデックスを張ると効率的。
+- 具体値は実装（マイグレーション）時に確定する。
+
 ## ER 図
 
 ```mermaid
