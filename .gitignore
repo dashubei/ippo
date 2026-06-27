@@ -1,0 +1,27 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.sqlite3
+db.sqlite3
+
+# 環境変数・秘密情報（絶対にコミットしない）
+.env
+.env.*
+!.env.example
+
+# Django 収集物
+backend/staticfiles/
+backend/media/
+
+# Node / フロントエンド（後のステージで使用）
+node_modules/
+dist/
+.vite/
+
+# OS / エディタ
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
