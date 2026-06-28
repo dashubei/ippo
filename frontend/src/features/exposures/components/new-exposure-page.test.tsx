@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { NewExposurePage } from '@/features/exposures/components/new-exposure-page'
@@ -20,17 +20,16 @@ describe('NewExposurePage', () => {
     ])
   })
 
-  test('不安度に101を入力するとバリデーションエラーを表示する', async () => {
-    const user = userEvent.setup()
+  test('スライダーを動かすと挑戦の難易度の目安が変わる', async () => {
     renderWithProviders(<div />, { routes, route: '/exposures/new' })
 
-    await user.selectOptions(await screen.findByLabelText('価値'), '1')
-    await user.type(screen.getByLabelText('行動'), '朝会で発言する')
-    await user.type(screen.getByLabelText('実施前の不安度（0〜100）'), '101')
-    await user.click(screen.getByRole('button', { name: '記録する' }))
+    const slider = await screen.findByLabelText('実施前の不安の強さ（0〜100）')
+    // 既定値（50）は最適ゾーン
+    expect(screen.getByText('ちょうどよい挑戦の目安')).toBeInTheDocument()
 
+    fireEvent.change(slider, { target: { value: '90' } })
     expect(
-      await screen.findByText('不安度は0〜100で入力してください'),
+      await screen.findByText('ひとつ小さくしてみよう'),
     ).toBeInTheDocument()
   })
 
@@ -39,7 +38,6 @@ describe('NewExposurePage', () => {
     renderWithProviders(<div />, { routes, route: '/exposures/new' })
 
     await user.type(await screen.findByLabelText('行動'), '朝会で発言する')
-    await user.type(screen.getByLabelText('実施前の不安度（0〜100）'), '40')
     await user.click(screen.getByRole('button', { name: '記録する' }))
 
     // 選択肢の placeholder と文言が重なるため、エラー表示（role=alert）で確認する。
@@ -53,7 +51,6 @@ describe('NewExposurePage', () => {
 
     await user.selectOptions(await screen.findByLabelText('価値'), '1')
     await user.type(screen.getByLabelText('行動'), '朝会で発言する')
-    await user.type(screen.getByLabelText('実施前の不安度（0〜100）'), '40')
     await user.click(screen.getByRole('button', { name: '記録する' }))
 
     expect(await screen.findByText('記録一覧')).toBeInTheDocument()

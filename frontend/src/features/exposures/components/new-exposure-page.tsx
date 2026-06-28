@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { applyApiFieldErrors } from '@/lib/form'
 import { useCreateExposure } from '@/features/exposures/api/exposures'
 import { useValueOptions } from '@/features/exposures/api/value-options'
+import { AnxietySlider } from '@/components/anxiety-slider'
 import {
   createExposureSchema,
   type CreateExposureForm,
@@ -25,11 +26,13 @@ export const NewExposurePage = () => {
   const values = useValueOptions()
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<CreateExposureForm, unknown, CreateExposureInput>({
     resolver: zodResolver(createExposureSchema),
+    defaultValues: { anxiety_before: 50 },
   })
 
   const onSubmit = handleSubmit(async (input) => {
@@ -103,23 +106,23 @@ export const NewExposurePage = () => {
             </Field>
 
             <Field
-              label="実施前の不安度（0〜100）"
+              label="実施前の不安の強さ（0〜100）"
               htmlFor="anxiety_before"
               error={errors.anxiety_before?.message}
             >
-              <TextInput
-                id="anxiety_before"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                max={100}
-                aria-invalid={Boolean(errors.anxiety_before)}
-                {...register('anxiety_before')}
+              <Controller
+                control={control}
+                name="anxiety_before"
+                render={({ field }) => (
+                  <AnxietySlider
+                    id="anxiety_before"
+                    value={Number(field.value ?? 50)}
+                    onChange={field.onChange}
+                    invalid={Boolean(errors.anxiety_before)}
+                  />
+                )}
               />
             </Field>
-            <p className="-mt-2 text-xs leading-relaxed text-ink-soft">
-              高い数字でも大丈夫。良し悪しではなく、今の状態のメモです。
-            </p>
 
             <Field
               label="メモ（任意）"

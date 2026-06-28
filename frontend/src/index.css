@@ -17,6 +17,18 @@
   --animate-panel-rise: panel-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   --animate-soft-fade: soft-fade 0.4s ease;
   --animate-sheet-up: sheet-up 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-emoji-pop: emoji-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes emoji-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes panel-rise {
@@ -81,6 +93,29 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
+}
+
+/* 不安スライダー（range）のつまみ。トラックは要素の background グラデーションを使う */
+.ippo-anxiety-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid rgba(75, 63, 54, 0.15);
+  box-shadow: 0 2px 8px rgba(75, 63, 54, 0.25);
+  cursor: pointer;
+}
+
+.ippo-anxiety-range::-moz-range-thumb {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid rgba(75, 63, 54, 0.15);
+  box-shadow: 0 2px 8px rgba(75, 63, 54, 0.25);
+  cursor: pointer;
 }
 
 @media (prefers-reduced-motion: reduce) {
