@@ -11,6 +11,7 @@
 | バックエンド | **Python + Django + Django REST Framework (DRF)** | ORM・認証・マイグレーション・セキュリティ既定が揃う「全部入り」。DB を伴う Web アプリを規約に沿って速く・安全に作れる |
 | データベース | **MySQL** | 広く使われ実績のあるリレーショナル DB。マネージド運用と相性が良い |
 | フロントエンド | **React + Vite + TypeScript**（+ Tailwind CSS） | API が別に立つ SPA 構成では SSR 不要。構成が単純で前後の責務が明確、開発も速い |
+| パッケージマネージャ | **pnpm** | npm より高速・厳格な依存解決。`pnpm-workspace.yaml` でサプライチェーン攻撃対策 |
 | 認証 | **JWT（`djangorestframework-simplejwt`）** | ステートレスで SPA/モバイルに向く。access(短命)＋refresh で有効期限を管理 |
 | インフラ | **AWS（EC2 + RDS）/ Linux** | 実務標準のクラウド。スケール・マネージドサービス・環境構築の自由度。OS は Linux |
 | Web サーバ | **Nginx + Gunicorn** | Nginx が受け口（リバースプロキシ/静的配信）、Gunicorn が Django を動かす定番構成 |
@@ -49,6 +50,32 @@
 ## コスト前提
 - 新規 AWS アカウントのクレジット（6 か月）内での運用を想定し、**Budgets アラートを設定**、利用後は **teardown**。
 - 常時公開のフロントは無料（Vercel）。
+
+## フロントエンドライブラリ詳細
+
+| 用途 | ライブラリ | 備考 |
+|---|---|---|
+| ルーティング | React Router v7 | trailing slash: true |
+| API クライアント | axios | interceptor でトークンリフレッシュ・401 ハンドリング |
+| データフェッチ | TanStack Query v5 | mutation / cache invalidation |
+| フォーム | react-hook-form + zod | スキーマバリデーション |
+| カレンダー | react-calendar | F6 カレンダー可視化対応 |
+| ユニット・結合テスト | vitest + React Testing Library + MSW | |
+| E2E テスト | Playwright | |
+| lint | oxlint | |
+| formatter | oxfmt | |
+| git hooks | lefthook | |
+
+### その他フロント設計決定
+
+- **トークン保存**: httpOnly Cookie（Django 側 `Set-Cookie` 対応必要、`credentials: "include"` + `X-CSRFToken` ヘッダ）
+- **状態管理**: useState + useContext（グローバルで持つのはログイン中ユーザー情報のみ）
+- **パスエイリアス**: `@/` → `src/`
+- **ディレクトリ構成**: bullet-proof-react に準拠
+- **最適化**: React Compiler 使用（`useMemo` / `useCallback` の手書き不要）
+- **ローディング**: skeleton（短め・データ取得）/ spinner（長め・フォーム送信等）
+- **モバイル**: モバイルファーストで設計。セーフエリアインセット対応
+- **セキュリティヘッダー**: vercel.json に HSTS・CSP 等を設定（`unsafe-inline` 不使用）
 
 ## 開発方針（重要）
 - **バックエンドの核（モデル・認可・データ分離・主要ビュー）は AI に書かせず、自分で 1 行ずつ書いて説明できる状態にする。**

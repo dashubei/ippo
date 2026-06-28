@@ -6,7 +6,8 @@
 ---
 
 ## 共通事項
-- **認証**：登録／ログインで**トークン**を受け取り、以降のリクエストはヘッダにトークンを付与する。
+- **認証（現状の実装）**：登録／ログインで JWT（access/refresh）を受け取り、以降のリクエストは `Authorization: Bearer <access>` ヘッダに付与する。
+- **認証（MVP の目標）**：httpOnly Cookie 方式（[tech-stack](../tech-stack.md) 参照）。Set-Cookie 発行・CSRF 対応へのバックエンド移行が残タスク。
 - **データ分離**：一覧・取得は URL に `user_id` を含めず、**トークンの本人**で絞り込む。他人のデータは返さない。
 - **ステータス**：作成 `201` ／ 取得・更新 `200` ／ 削除 `204` ／ 入力不正 `400` ／ 未認証 `401` ／ 権限なし `403` ／ 不存在 `404`。
 - **試用**：ゲストログイン機能は設けず、**練習用アカウント**を事前作成し、その資格情報を README に記載して試用してもらう。
@@ -14,9 +15,12 @@
 ## 認証
 | メソッド | パス | 役割 | 認証 | リクエスト | 成功 |
 |---|---|---|---|---|---|
-| POST | `/api/register` | 登録 | 不要 | body `{email, password, name?(任意)}` | 201（トークン返却） |
-| POST | `/api/login` | ログイン | 不要 | body `{email, password}` | 200（トークン返却） |
-| POST | `/api/logout` | ログアウト | 要 | — | 204 |
+| POST | `/api/register` | 登録 | 不要 | body `{email, password, name}` | 201（access/refresh 返却） |
+| POST | `/api/login` | ログイン | 不要 | body `{email, password}` | 200（access/refresh 返却） |
+| POST | `/api/refresh` | access 更新 | 不要 | body `{refresh}` | 200（access 返却） |
+| POST | `/api/logout` | ログアウト（refresh 失効） | 不要※ | body `{refresh}` | 200 |
+
+※ logout は `TokenBlacklistView` 直結のため permission は不要。渡された refresh トークンをブラックリスト化して失効させる。
 
 ## 価値（UserValue）
 | メソッド | パス | 役割 | 認証 | リクエスト | 成功 |
@@ -39,8 +43,9 @@
 | エンドポイント | 状態 |
 |---|---|
 | POST /api/register | ✅ 実装済み・動作確認済み |
-| POST /api/login | ✅ 実装済み・動作確認済み |
-| POST /api/logout | ✅ 実装済み・動作確認済み |
+| POST /api/login | ✅ 実装済み・動作確認済み（`TokenObtainPairView`） |
+| POST /api/refresh | ✅ 実装済み（`TokenRefreshView`） |
+| POST /api/logout | ✅ 実装済み・動作確認済み（`TokenBlacklistView`） |
 | GET /api/values | ✅ 実装済み・動作確認済み |
 | POST /api/values | ✅ 実装済み・動作確認済み |
 | PATCH /api/values/{id} | ✅ 実装済み |
@@ -55,3 +60,4 @@
 - **カレンダー(F6)は専用エンドポイントを作らず**、一覧 `GET /api/exposures` に日付範囲クエリ（`from`/`to`）を付けて実現する。
 - **実施後の追記**は新規作成ではなく既存 1 件の部分更新なので `PATCH /api/exposures/{id}`。`done_at` が入った時点で「実施済み」とみなす。
 - 状態を変えない取得は `GET`、状態を変える操作は `POST`/`PATCH`/`DELETE` に割り当てる（`GET` は安全・body を持たない）。
+- **register の `name`**：現状 `User.name` に `blank=True` が無いため DRF 上は**必須**。任意にするにはモデルに `blank=True` を追加する（残タスク）。

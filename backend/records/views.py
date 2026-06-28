@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import UserValue, ExposureRecord
 from .serializers import ExposureRecordSerializer, UserValueSerializer
 
+
 class UserValueViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = UserValue.objects.filter(user=request.user)
@@ -11,7 +12,9 @@ class UserValueViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = UserValueSerializer(data=request.data, context={"request": request})
+        serializer = UserValueSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -19,7 +22,9 @@ class UserValueViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         instance = get_object_or_404(UserValue, pk=pk, user=request.user)
-        serializer = UserValueSerializer(instance, data=request.data, partial=True, context={"request": request})
+        serializer = UserValueSerializer(
+            instance, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -29,6 +34,7 @@ class UserValueViewSet(viewsets.ViewSet):
         instance = get_object_or_404(UserValue, pk=pk, user=request.user)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ExposureRecordViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -48,7 +54,9 @@ class ExposureRecordViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = ExposureRecordSerializer(data=request.data, context={"request": request})
+        serializer = ExposureRecordSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -56,7 +64,9 @@ class ExposureRecordViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         instance = get_object_or_404(ExposureRecord, pk=pk, user=request.user)
-        serializer = ExposureRecordSerializer(instance, data=request.data, partial=True, context={"request": request})
+        serializer = ExposureRecordSerializer(
+            instance, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

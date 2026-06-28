@@ -48,4 +48,4 @@
 - 支援者（カウンセラー等）との記録共有
 
 ## 7. データモデル
-[docs/er.md](er.md) を参照。
+[docs/backend/er.md](backend/er.md) を参照。

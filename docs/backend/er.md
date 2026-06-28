@@ -11,7 +11,7 @@
 |---|---|---|---|
 | id | integer | 主キー・自動採番 | 一意識別 |
 | name | string(50) | 任意 | 表示名 |
-| email | string(255) | 必須・ユニーク | ログイン ID（255 はメール最大長 254 をカバー） |
+| email | string(254) | 必須・ユニーク | ログイン ID（`EmailField` 既定の最大長 254） |
 | password | string(固定長) | 必須 | 認証用。**ハッシュで保存** |
 | created_at | datetime | 自動 | 登録日時 |
 
@@ -62,7 +62,7 @@ erDiagram
     User {
         int id PK
         string name "nullable, 50"
-        string email "required, unique, 255"
+        string email "required, unique, 254"
         string password "required, hashed"
         datetime created_at
     }

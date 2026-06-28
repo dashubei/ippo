@@ -1,0 +1,18 @@
+# サプライチェーン攻撃対策（pnpm v10+ 対応）
+# 参考: https://pnpm.io/supply-chain-security
+
+# 新規公開パッケージを 7 日間クォランティン（悪意あるパッケージは数日以内に検出・削除されることが多い）
+minimumReleaseAge: 10080
+
+# git: や tarball URL による推移的依存を禁止（レジストリ外からのコード取得をブロック）
+blockExoticSubdeps: true
+
+# 過去バージョンより信頼性が低下したパッケージを拒否（アカウント乗っ取り等の早期検知）
+trustPolicy: 'no-downgrade'
+
+# ライフサイクルスクリプト（postinstall 等）の実行を許可リスト制に。
+# 許可されていないパッケージがビルドスクリプトを実行しようとすると CI が失敗する
+strictDepBuilds: true
+allowBuilds:
+  esbuild: true
+  vite: true
