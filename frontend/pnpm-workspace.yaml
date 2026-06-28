@@ -10,9 +10,24 @@ blockExoticSubdeps: true
 # 過去バージョンより信頼性が低下したパッケージを拒否（アカウント乗っ取り等の早期検知）
 trustPolicy: 'no-downgrade'
 
+# trustPolicy のスコープ限定例外（package@version 単位・要レビュー）
+# 各エントリは「正規パッケージで、信頼証跡の低下は公開プロセス変更による誤検知」であることを確認のうえ追加する。
+trustPolicyExclude:
+  # nanoid@3.3.14: vite ← postcss の推移的依存。旧版は staged publish の信頼証跡ありだが本版は無し（chokidar@4.0.3 と同種の誤検知）。
+  #   理由: Vite 標準ツールチェーンの正規依存 / 追加日: 2026-06-28 / 担当: dashubei
+  - 'nanoid@3.3.14'
+  # semver@6.3.1: @babel/core の推移的依存。npm 公式の基盤パッケージ。旧版に provenance あり→本版に無し（誤検知）。
+  #   理由: babel（@vitejs/plugin-react）の正規依存 / 追加日: 2026-06-28 / 担当: dashubei
+  - 'semver@6.3.1'
+
 # ライフサイクルスクリプト（postinstall 等）の実行を許可リスト制に。
 # 許可されていないパッケージがビルドスクリプトを実行しようとすると CI が失敗する
 strictDepBuilds: true
 allowBuilds:
   esbuild: true
+  # lefthook の postinstall（git hooks 自動インストール）は実行しない。
+  # フックは別途 `lefthook install` を手動で実行する（バイナリ自体は同梱され利用可能）。
+  lefthook: false
+  # msw の postinstall（ブラウザ用 Service Worker 生成）はテスト（msw/node）に不要のため実行しない
+  msw: false
   vite: true

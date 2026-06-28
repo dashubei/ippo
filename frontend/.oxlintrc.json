@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "unicorn/filename-case": ["error", { "case": "kebabCase" }]
+  },
+  "ignorePatterns": ["dist", "e2e", "playwright-report"]
+}

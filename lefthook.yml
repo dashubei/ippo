@@ -1,0 +1,19 @@
+# Git hooks（lefthook）。フロントエンドの lint / format / test を実行する。
+# pnpm のルートは frontend/ なので、各コマンドは root: frontend/ で実行する。
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      root: frontend/
+      glob: "*.{ts,tsx}"
+      run: pnpm lint
+    format:
+      root: frontend/
+      glob: "*.{ts,tsx,json,css,html,md}"
+      run: pnpm format:check
+
+pre-push:
+  commands:
+    test:
+      root: frontend/
+      run: pnpm test:run

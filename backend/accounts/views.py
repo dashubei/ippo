@@ -27,7 +27,7 @@ class RegisterView(APIView):
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
             set_auth_cookie(
-                resopnse=response, access=access_token, refresh=refresh_token
+                response=response, access=access_token, refresh=refresh_token
             )
             return response
         else:
@@ -39,7 +39,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
         refresh_token = response.data["refresh"]
-        set_auth_cookie(resopnse=response, access=access_token, refresh=refresh_token)
+        set_auth_cookie(response=response, access=access_token, refresh=refresh_token)
         del response.data["access"]
         del response.data["refresh"]
         return response
@@ -55,7 +55,7 @@ class CookieTokenRefreshView(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
         refresh_token = response.data["refresh"]
-        set_auth_cookie(resopnse=response, access=access_token, refresh=refresh_token)
+        set_auth_cookie(response=response, access=access_token, refresh=refresh_token)
         del response.data["access"]
         del response.data["refresh"]
         return response
