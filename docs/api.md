@@ -35,6 +35,22 @@
 | PATCH | `/api/exposures/{id}` | 実施後の追記 | 要 | body `{done_at, anxiety_after, memo_after}` | 200 |
 | DELETE | `/api/exposures/{id}` | 削除 | 要 | — | 204 |
 
+## 実装状況（2026-06-28 時点）
+| エンドポイント | 状態 |
+|---|---|
+| POST /api/register | ✅ 実装済み・動作確認済み |
+| POST /api/login | ✅ 実装済み・動作確認済み |
+| POST /api/logout | 🔴 未実装（simplejwt の `TokenBlacklistView` を追加予定） |
+| GET /api/values | ✅ 実装済み・動作確認済み |
+| POST /api/values | ✅ 実装済み・動作確認済み |
+| PATCH /api/values/{id} | ✅ 実装済み |
+| DELETE /api/values/{id} | ✅ 実装済み |
+| GET /api/exposures | ✅ 実装済み（**TODO**: `from`/`to` 日付絞り込みフィルター未実装） |
+| POST /api/exposures | ✅ 実装済み・動作確認済み |
+| GET /api/exposures/{id} | ✅ 実装済み |
+| PATCH /api/exposures/{id} | ✅ 実装済み |
+| DELETE /api/exposures/{id} | ✅ 実装済み |
+
 ## 設計上の判断メモ
 - **カレンダー(F6)は専用エンドポイントを作らず**、一覧 `GET /api/exposures` に日付範囲クエリ（`from`/`to`）を付けて実現する。
 - **実施後の追記**は新規作成ではなく既存 1 件の部分更新なので `PATCH /api/exposures/{id}`。`done_at` が入った時点で「実施済み」とみなす。
