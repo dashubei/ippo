@@ -23,3 +23,29 @@ class RegisterView(APIView):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        access_token = response.data["access"]
+        refresh_token = response.data["refresh"]
+        response.set_cookie(
+            key=settings.AUTH_COOKIE["access"],
+            value=access_token,
+            max_age=settings.AUTH_COOKIE["access_max_age"],
+            httponly=settings.AUTH_COOKIE["httponly"],
+            secure=settings.AUTH_COOKIE["secure"],
+            samesite=settings.AUTH_COOKIE["samesite"],
+        )
+        response.set_cookie(
+            key=settings.AUTH_COOKIE["refresh"],
+            value=refresh_token,
+            max_age=settings.AUTH_COOKIE["access_max_age"],
+            httponly=settings.AUTH_COOKIE["httponly"],
+            secure=settings.AUTH_COOKIE["secure"],
+            samesite=settings.AUTH_COOKIE["samesite"],
+        )
+        del response.data["access"]
+        del response.data["refresh"]
+        return response
