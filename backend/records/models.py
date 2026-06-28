@@ -7,6 +7,11 @@ class UserValue(models.Model):
     name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'name'], name='unique_user_value_name')
+        ]
+
 class ExposureRecord(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     value = models.ForeignKey(UserValue, on_delete=models.CASCADE)
