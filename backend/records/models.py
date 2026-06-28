@@ -17,3 +17,8 @@ class ExposureRecord(models.Model):
     memo_after = models.TextField(null=True,blank=True)
     done_at = models.DateTimeField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'done_at']),
+        ]

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'accounts',
     'records',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

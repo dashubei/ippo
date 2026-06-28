@@ -33,6 +33,12 @@ class UserValueViewSet(viewsets.ViewSet):
 class ExposureRecordViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = ExposureRecord.objects.filter(user=request.user)
+        date_from = request.query_params.get("from")
+        date_to = request.query_params.get("to")
+        if date_from:
+            queryset = queryset.filter(done_at__gte=date_from)
+        if date_to:
+            queryset = queryset.filter(done_at__lte=date_to)
         serializer = ExposureRecordSerializer(queryset, many=True)
         return Response(serializer.data)
 

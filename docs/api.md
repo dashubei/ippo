@@ -40,12 +40,12 @@
 |---|---|
 | POST /api/register | ✅ 実装済み・動作確認済み |
 | POST /api/login | ✅ 実装済み・動作確認済み |
-| POST /api/logout | 🔴 未実装（simplejwt の `TokenBlacklistView` を追加予定） |
+| POST /api/logout | ✅ 実装済み・動作確認済み |
 | GET /api/values | ✅ 実装済み・動作確認済み |
 | POST /api/values | ✅ 実装済み・動作確認済み |
 | PATCH /api/values/{id} | ✅ 実装済み |
 | DELETE /api/values/{id} | ✅ 実装済み |
-| GET /api/exposures | ✅ 実装済み（**TODO**: `from`/`to` 日付絞り込みフィルター未実装） |
+| GET /api/exposures | ✅ 実装済み・動作確認済み（日付フィルター対応） |
 | POST /api/exposures | ✅ 実装済み・動作確認済み |
 | GET /api/exposures/{id} | ✅ 実装済み |
 | PATCH /api/exposures/{id} | ✅ 実装済み |

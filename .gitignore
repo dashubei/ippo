@@ -20,6 +20,10 @@ node_modules/
 dist/
 .vite/
 
+# 進捗管理・ローカル設定（非公開）
+PROGRESS.md
+CLAUDE.md
+
 # OS / エディタ
 .DS_Store
 Thumbs.db
