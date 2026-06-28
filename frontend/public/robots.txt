@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /$
+Allow: /login
+Allow: /register
+Disallow: /values
+Disallow: /exposures
+
+# デプロイ時に本番ドメインへ置換すること
+Sitemap: https://REPLACE_WITH_SITE_ORIGIN/sitemap.xml
