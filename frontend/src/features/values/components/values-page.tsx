@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import { BookOpen } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -15,6 +17,13 @@ export const ValuesPage = () => {
         <p className="text-sm text-ink-soft">
           「どんな人でありたいか」「何を大切にしたいか」を、自由に書き留めてみましょう。正解はありません。
         </p>
+        <Link
+          to="/learn"
+          className="inline-flex items-center gap-1.5 text-sm font-bold text-accent"
+        >
+          <BookOpen size={16} aria-hidden="true" />
+          価値ってなんだろう
+        </Link>
       </header>
 
       <Card className="p-4">

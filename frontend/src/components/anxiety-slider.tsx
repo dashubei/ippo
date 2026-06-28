@@ -1,4 +1,11 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { HelpCircle, Ruler } from 'lucide-react'
 import { getAnxietyJudgment } from '@/lib/judgment'
+import { useAnxietyAnchors } from '@/hooks/use-anxiety-anchors'
+import { Modal } from '@/components/ui/modal'
+import { AnxietyCalibration } from '@/components/anxiety-calibration'
+import { SliderGuide } from '@/components/slider-guide'
 
 // 5 ゾーンの色に調和させたトラックのグラデーション。
 const trackGradient = `linear-gradient(to right,
@@ -23,6 +30,9 @@ export const AnxietySlider = ({
   invalid,
 }: AnxietySliderProps) => {
   const judgment = getAnxietyJudgment(value)
+  const { anchors, saveAnchors } = useAnxietyAnchors()
+  const [guideOpen, setGuideOpen] = useState(false)
+  const [calibrateOpen, setCalibrateOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-4">
@@ -57,6 +67,7 @@ export const AnxietySlider = ({
           type="range"
           min={0}
           max={100}
+          step={5}
           value={value}
           onChange={(event) => onChange(Number(event.target.value))}
           aria-invalid={invalid}
@@ -64,10 +75,19 @@ export const AnxietySlider = ({
           className="ippo-anxiety-range h-9 w-full cursor-pointer appearance-none rounded-full"
           style={{ background: trackGradient }}
         />
-        <div className="mt-2 flex justify-between text-xs text-ink-soft">
-          <span>0 おだやか</span>
-          <span>50</span>
-          <span>100 とても強い</span>
+        <div className="mt-2 grid grid-cols-3 gap-2 text-xs leading-snug text-ink-soft">
+          <span className="line-clamp-2">
+            <span className="font-bold text-ink">0</span>{' '}
+            {anchors?.low || 'おだやか'}
+          </span>
+          <span className="line-clamp-2 text-center">
+            <span className="font-bold text-ink">50</span>{' '}
+            {anchors?.mid || 'その中間'}
+          </span>
+          <span className="line-clamp-2 text-right">
+            <span className="font-bold text-ink">100</span>{' '}
+            {anchors?.high || 'とても強い'}
+          </span>
         </div>
       </div>
 
@@ -80,19 +100,73 @@ export const AnxietySlider = ({
         role="status"
         aria-live="polite"
       >
-        <h3 className="font-bold" style={{ color: judgment.text }}>
+        <p className="font-bold" style={{ color: judgment.text }}>
           {judgment.label}
-        </h3>
+        </p>
         <p className="mt-1 text-sm text-ink">{judgment.message}</p>
         <p className="mt-1 text-xs leading-relaxed text-ink-soft">
           {judgment.recommendation}
         </p>
       </div>
 
+      {judgment.level === 'hard' && (
+        <Link
+          to="/learn"
+          className="text-center text-xs font-bold text-accent underline"
+        >
+          不安が強すぎると感じたら：安全に使うために
+        </Link>
+      )}
+
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => setGuideOpen(true)}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-white/60 px-4 py-2 text-xs font-bold text-ink backdrop-blur-md transition-colors hover:bg-white/80"
+        >
+          <HelpCircle size={16} aria-hidden="true" className="text-accent" />
+          点数の付け方
+        </button>
+        <button
+          type="button"
+          onClick={() => setCalibrateOpen(true)}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-white/60 px-4 py-2 text-xs font-bold text-ink backdrop-blur-md transition-colors hover:bg-white/80"
+        >
+          <Ruler size={16} aria-hidden="true" className="text-accent" />
+          {anchors ? '目盛りを編集' : '自分の目盛りを決める'}
+        </button>
+      </div>
+
+      {!anchors && (
+        <p className="text-center text-xs leading-relaxed text-ink-soft">
+          自分の「0・50・100」を決めておくと、点数がつけやすくなります。
+        </p>
+      )}
+
       <p className="text-center text-xs leading-relaxed text-ink-soft">
         ※
         挑戦の強さの目安です。最適な強さは人によって異なり、専門家の判断に代わるものではありません。
       </p>
+
+      <Modal
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        title="点数の付け方"
+      >
+        <SliderGuide />
+      </Modal>
+      <Modal
+        open={calibrateOpen}
+        onClose={() => setCalibrateOpen(false)}
+        title="自分の目盛りを決める"
+        dismissibleByBackdrop={false}
+      >
+        <AnxietyCalibration
+          initial={anchors}
+          onSave={saveAnchors}
+          onClose={() => setCalibrateOpen(false)}
+        />
+      </Modal>
     </div>
   )
 }

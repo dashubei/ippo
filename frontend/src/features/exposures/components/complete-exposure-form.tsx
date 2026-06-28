@@ -5,6 +5,7 @@ import { Field } from '@/components/ui/field'
 import { TextInput } from '@/components/ui/text-input'
 import { Textarea } from '@/components/ui/textarea'
 import { applyApiFieldErrors } from '@/lib/form'
+import { useAnxietyAnchors } from '@/hooks/use-anxiety-anchors'
 import { useUpdateExposure } from '@/features/exposures/api/exposures'
 import { localInputToIso } from '@/features/exposures/lib/date'
 import {
@@ -17,6 +18,7 @@ export const CompleteExposureForm = ({ id }: { id: number }) => {
   // React Compiler は RHF の register と相性が悪いため除外する。
   'use no memo'
   const updateExposure = useUpdateExposure()
+  const { anchors } = useAnxietyAnchors()
   const {
     register,
     handleSubmit,
@@ -72,7 +74,13 @@ export const CompleteExposureForm = ({ id }: { id: number }) => {
           {...register('anxiety_after')}
         />
       </Field>
-      <p className="-mt-2 text-xs leading-relaxed text-ink-soft">
+      {anchors && (
+        <p className="-mt-2 text-xs leading-relaxed text-ink">
+          あなたの目盛り： 0＝{anchors.low || '—'} ／ 50＝{anchors.mid || '—'}{' '}
+          ／ 100＝{anchors.high || '—'}
+        </p>
+      )}
+      <p className="text-xs leading-relaxed text-ink-soft">
         下がっていなくても問題ありません。取り組めたこと自体が一歩です。
       </p>
 
@@ -84,7 +92,7 @@ export const CompleteExposureForm = ({ id }: { id: number }) => {
         <Textarea
           id="memo_after"
           rows={3}
-          placeholder="やってみてどうだったか"
+          placeholder="いちばん怖かったことは、実際に起きた？ 予想と実際はどう違った？ 気づいたことなど"
           aria-invalid={Boolean(errors.memo_after)}
           {...register('memo_after')}
         />

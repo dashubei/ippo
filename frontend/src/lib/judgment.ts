@@ -35,7 +35,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       label: 'いまは挑戦しなくても大丈夫',
       emoji: '😌',
       accent: '#8fb8c9',
-      text: '#4e7e92',
+      text: '#356273',
       tint: '#eaf3f6',
       message: 'ほとんど不安はないようです。',
       recommendation:
@@ -48,7 +48,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       label: 'もう少し踏み込めそう',
       emoji: '🙂',
       accent: '#e0c07a',
-      text: '#9a7b33',
+      text: '#6f5618',
       tint: '#f8f1e0',
       message: '少しだけ不安がありますね。',
       recommendation:
@@ -61,7 +61,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       label: 'ちょうどよい挑戦の目安',
       emoji: '😊',
       accent: '#8dbe9a',
-      text: '#3f7e54',
+      text: '#316a43',
       tint: '#e8f4ec',
       message: '向き合う練習にちょうどよい強さです。',
       recommendation:
@@ -74,7 +74,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       label: '少し負荷が高めかも',
       emoji: '😟',
       accent: '#eca878',
-      text: '#b5703c',
+      text: '#8f5526',
       tint: '#fbefe4',
       message: 'かなり不安が強いようです。',
       recommendation:
@@ -86,7 +86,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
     label: 'ひとつ小さくしてみよう',
     emoji: '😣',
     accent: '#e08c86',
-    text: '#b0524c',
+    text: '#984139',
     tint: '#fae8e6',
     message: '不安がとても強い状態です。',
     recommendation:

@@ -34,6 +34,7 @@ export const AppLayout = () => {
         <nav className="flex gap-1">
           <NavTab to="/exposures">記録</NavTab>
           <NavTab to="/values">価値</NavTab>
+          <NavTab to="/learn">使い方</NavTab>
         </nav>
         <Button
           variant="ghost"

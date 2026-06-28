@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { applyApiFieldErrors } from '@/lib/form'
 import { useCreateExposure } from '@/features/exposures/api/exposures'
 import { useValueOptions } from '@/features/exposures/api/value-options'
+import { ActionHelper } from '@/features/exposures/components/action-helper'
 import { AnxietySlider } from '@/components/anxiety-slider'
 import {
   createExposureSchema,
@@ -28,6 +29,8 @@ export const NewExposurePage = () => {
     register,
     control,
     handleSubmit,
+    setValue,
+    setFocus,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<CreateExposureForm, unknown, CreateExposureInput>({
@@ -105,6 +108,16 @@ export const NewExposurePage = () => {
               />
             </Field>
 
+            <ActionHelper
+              onPick={(text) => {
+                setValue('action', text, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
+                setFocus('action')
+              }}
+            />
+
             <Field
               label="実施前の不安の強さ（0〜100）"
               htmlFor="anxiety_before"
@@ -125,14 +138,14 @@ export const NewExposurePage = () => {
             </Field>
 
             <Field
-              label="メモ（任意）"
+              label="やる前のメモ（任意）"
               htmlFor="memo_before"
               error={errors.memo_before?.message}
             >
               <Textarea
                 id="memo_before"
                 rows={3}
-                placeholder="どんな気持ちか、何が不安かなど"
+                placeholder="何が起きると怖い？（例: 笑われる／無視される） それはどれくらい起きそう？ 予想を書いておくと、あとで実際と見くらべられます。"
                 aria-invalid={Boolean(errors.memo_before)}
                 {...register('memo_before')}
               />
