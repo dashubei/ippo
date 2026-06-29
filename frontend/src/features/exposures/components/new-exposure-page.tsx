@@ -1,6 +1,7 @@
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
+import { Compass } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
@@ -64,7 +65,13 @@ export const NewExposurePage = () => {
       )}
 
       {noValues ? (
-        <Card className="flex flex-col gap-3 p-5 text-center text-ink-soft">
+        <Card className="flex flex-col items-center gap-3 p-5 text-center text-ink-soft">
+          <span
+            aria-hidden="true"
+            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
+          >
+            <Compass size={28} />
+          </span>
           <p>
             まずは大切にしたいこと（価値）を一つ登録してみましょう。そこから一歩が始まります。
           </p>
@@ -85,7 +92,7 @@ export const NewExposurePage = () => {
                   id="value"
                   defaultValue=""
                   aria-invalid={Boolean(errors.value)}
-                  className="min-h-11 w-full rounded-2xl border border-white/70 bg-white/70 px-4 py-3 text-ink outline-none backdrop-blur-md focus-visible:border-accent aria-[invalid=true]:border-danger"
+                  className="min-h-11 w-full rounded-2xl border border-ink-soft/40 bg-white px-4 py-3 text-ink outline-none focus-visible:border-accent aria-[invalid=true]:border-danger"
                   {...register('value')}
                 >
                   <option value="">選択してください</option>
@@ -138,7 +145,7 @@ export const NewExposurePage = () => {
             </Field>
 
             <Field
-              label="やる前のメモ（任意）"
+              label="やる前のメモ（書かなくてもOK）"
               htmlFor="memo_before"
               error={errors.memo_before?.message}
             >

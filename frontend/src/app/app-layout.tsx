@@ -32,7 +32,8 @@ export const AppLayout = () => {
       <NoIndex />
       <header className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-cream/80 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 backdrop-blur-md">
         <nav className="flex gap-1">
-          <NavTab to="/exposures">記録</NavTab>
+          <NavTab to="/home">ホーム</NavTab>
+          <NavTab to="/history">記録</NavTab>
           <NavTab to="/values">価値</NavTab>
           <NavTab to="/learn">使い方</NavTab>
         </nav>

@@ -6,15 +6,17 @@ import { renderWithProviders } from '@/test/test-utils'
 
 const routes = [
   { path: '/register', element: <RegisterPage /> },
-  { path: '/exposures', element: <div>記録一覧</div> },
+  { path: '/home', element: <div>ホーム</div> },
 ]
 
 const fill = async (
   user: ReturnType<typeof userEvent.setup>,
   { password, confirm }: { password: string; confirm: string },
 ) => {
-  await user.type(await screen.findByLabelText('名前'), 'たろう')
-  await user.type(screen.getByLabelText('メールアドレス'), 'taro@example.com')
+  await user.type(
+    await screen.findByLabelText('メールアドレス'),
+    'taro@example.com',
+  )
   await user.type(screen.getByLabelText('パスワード（8文字以上）'), password)
   await user.type(screen.getByLabelText('パスワード（確認）'), confirm)
   await user.click(screen.getByRole('button', { name: '登録する' }))
@@ -47,12 +49,12 @@ describe('RegisterForm', () => {
     ).toBeInTheDocument()
   })
 
-  test('正常入力で登録し記録一覧へ遷移する', async () => {
+  test('正常入力で登録しホームへ遷移する', async () => {
     const user = userEvent.setup()
     renderWithProviders(<div />, { routes, route: '/register' })
 
     await fill(user, { password: 'password123', confirm: 'password123' })
 
-    expect(await screen.findByText('記録一覧')).toBeInTheDocument()
+    expect(await screen.findByText('ホーム')).toBeInTheDocument()
   })
 })

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Calendar from 'react-calendar'
 import type { TileArgs } from 'react-calendar'
 import { Link } from 'react-router-dom'
+import { Footprints } from 'lucide-react'
 import 'react-calendar/dist/Calendar.css'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -18,12 +19,19 @@ import {
 import type { ExposureRecord } from '@/types/api'
 
 const PageHeader = () => (
-  <div className="flex items-center justify-between gap-2">
-    <h1 className="text-lg font-bold text-ink">記録</h1>
-    <Link to="/exposures/new">
-      <Button className="px-4 py-2 text-sm">新しく記録する</Button>
-    </Link>
-  </div>
+  <header className="flex flex-col gap-1">
+    <div className="flex items-center justify-between gap-2">
+      <h1 className="font-rounded text-2xl font-bold text-ink">
+        これまでの記録
+      </h1>
+      <Link to="/exposures/new">
+        <Button className="px-4 py-2 text-sm">新しく記録する</Button>
+      </Link>
+    </div>
+    <p className="text-sm leading-relaxed text-ink-soft">
+      重ねてきた一歩を、カレンダーで振り返れます。日付を選ぶと、その日の記録が見られます。
+    </p>
+  </header>
 )
 
 export const ExposuresPage = () => {
@@ -136,9 +144,15 @@ export const ExposuresPage = () => {
       )}
 
       {records.length === 0 && (
-        <Card className="flex flex-col gap-3 p-6 text-center text-ink-soft">
+        <Card className="flex flex-col items-center gap-3 p-6 text-center text-ink-soft">
+          <span
+            aria-hidden="true"
+            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
+          >
+            <Footprints size={28} />
+          </span>
           <p>
-            まだ記録はありません。価値に向けた小さな一歩から始めてみましょう。
+            まだ振り返る記録はありません。最初の一歩を残すと、ここに積み重なっていきます。
           </p>
           <Link to="/exposures/new" className="font-bold text-accent">
             新しく記録する

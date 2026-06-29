@@ -28,8 +28,7 @@ export const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({ resolver: zodResolver(loginSchema) })
 
-  const from =
-    (location.state as FromState | null)?.from?.pathname ?? '/exposures'
+  const from = (location.state as FromState | null)?.from?.pathname ?? '/home'
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null)

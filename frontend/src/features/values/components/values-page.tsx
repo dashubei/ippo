@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { BookOpen } from 'lucide-react'
+import { BookOpen, Compass } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -41,8 +41,17 @@ export const ValuesPage = () => {
           価値を読み込めませんでした。時間をおいて再度お試しください
         </ErrorText>
       ) : values.length === 0 ? (
-        <div className="py-8 text-center text-ink-soft">
-          まだ価値が登録されていません。最初の価値を追加してみましょう。
+        <div className="flex flex-col items-center gap-3 py-8 text-center text-ink-soft">
+          <span
+            aria-hidden="true"
+            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
+          >
+            <Compass size={28} />
+          </span>
+          <p>まだ価値が登録されていません。最初の価値を追加してみましょう。</p>
+          <Link to="/onboarding" className="font-bold text-accent">
+            ガイドにそって決める
+          </Link>
         </div>
       ) : (
         <Card className="overflow-hidden">

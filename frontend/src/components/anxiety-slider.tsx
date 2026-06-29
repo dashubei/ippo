@@ -56,18 +56,19 @@ export const AnxietySlider = ({
       <div>
         <div className="mb-2 flex items-end justify-end">
           <span
-            className="text-4xl font-bold tabular-nums transition-colors duration-500"
+            className="text-base font-bold tabular-nums transition-colors duration-500"
             style={{ color: judgment.text }}
           >
             {value}
           </span>
+          <span className="ml-1 pb-0.5 text-xs text-ink-soft">あたり</span>
         </div>
         <input
           id={id}
           type="range"
           min={0}
           max={100}
-          step={5}
+          step={1}
           value={value}
           onChange={(event) => onChange(Number(event.target.value))}
           aria-invalid={invalid}
@@ -89,6 +90,9 @@ export const AnxietySlider = ({
             {anchors?.high || 'とても強い'}
           </span>
         </div>
+        <p className="mt-2 text-center text-xs leading-relaxed text-ink-soft">
+          ぴったりの数字でなくて大丈夫。今の気持ちの目安で動かしてください。
+        </p>
       </div>
 
       <div

@@ -13,13 +13,11 @@ describe('QuickCheckTool', () => {
     const { unmount } = render(<QuickCheckTool />)
 
     await user.type(
-      screen.getByLabelText('やってみたい行動（任意）'),
+      screen.getByLabelText('やってみたい行動（書かなくてもOK）'),
       '会議で発言する',
     )
     fireEvent.change(screen.getByRole('slider'), { target: { value: '80' } })
-    await user.click(
-      screen.getByRole('button', { name: 'この端末に保存（1件）' }),
-    )
+    await user.click(screen.getByRole('button', { name: '保存' }))
 
     expect(await screen.findByText('保存した内容')).toBeInTheDocument()
     expect(screen.getByText('会議で発言する')).toBeInTheDocument()

@@ -9,7 +9,7 @@ import { renderWithProviders } from '@/test/test-utils'
 
 const routes = [
   { path: '/login', element: <LoginPage /> },
-  { path: '/exposures', element: <div>記録一覧</div> },
+  { path: '/home', element: <div>ホーム</div> },
 ]
 
 describe('LoginForm', () => {
@@ -24,7 +24,7 @@ describe('LoginForm', () => {
     ).toBeInTheDocument()
   })
 
-  test('正常入力でログインし記録一覧へ遷移する', async () => {
+  test('正常入力でログインしホームへ遷移する', async () => {
     const user = userEvent.setup()
     renderWithProviders(<div />, { routes, route: '/login' })
 
@@ -35,7 +35,7 @@ describe('LoginForm', () => {
     await user.type(screen.getByLabelText('パスワード'), 'password123')
     await user.click(screen.getByRole('button', { name: 'ログイン' }))
 
-    expect(await screen.findByText('記録一覧')).toBeInTheDocument()
+    expect(await screen.findByText('ホーム')).toBeInTheDocument()
   })
 
   test('認証失敗(401)でエラーメッセージを表示する', async () => {

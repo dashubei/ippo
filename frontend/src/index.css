@@ -118,6 +118,132 @@
   cursor: pointer;
 }
 
+/* react-calendar をトンマナ（穏やか・やわらかい・温かい）に合わせる上書き */
+.ippo-calendar {
+  width: 100%;
+  max-width: 100%;
+  border: none;
+  background: transparent;
+  font-family: var(--font-rounded);
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+
+.ippo-calendar button {
+  border-radius: 0.75rem;
+  color: inherit;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* ナビゲーション（前月/次月/月表示） */
+.ippo-calendar .react-calendar__navigation {
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.ippo-calendar .react-calendar__navigation button {
+  min-width: 2.75rem;
+  padding: 0.5rem;
+  background: none;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.ippo-calendar .react-calendar__navigation__label {
+  font-size: 0.95rem;
+}
+
+.ippo-calendar .react-calendar__navigation button:enabled:hover,
+.ippo-calendar .react-calendar__navigation button:enabled:focus {
+  background-color: rgba(194, 103, 63, 0.08);
+}
+
+.ippo-calendar .react-calendar__navigation button:disabled {
+  background: none;
+  color: var(--color-ink-soft);
+  opacity: 0.5;
+}
+
+/* 曜日ヘッダー */
+.ippo-calendar .react-calendar__month-view__weekdays {
+  text-transform: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+}
+
+.ippo-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: 0.5rem 0.25rem;
+}
+
+.ippo-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+  cursor: default;
+}
+
+/* 土日は控えめに（赤を抑え、ink-soft 寄りの落ち着いた色味） */
+.ippo-calendar .react-calendar__month-view__days__day--weekend {
+  color: #a86a55;
+}
+
+/* 隣月の日付はさらに薄く */
+.ippo-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  color: var(--color-ink-soft);
+  opacity: 0.55;
+}
+
+/* 日付タイル：番号とドットを縦に重ねて収める */
+.ippo-calendar .react-calendar__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 100%;
+  padding: 0.5rem 0.25rem;
+  background: none;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  aspect-ratio: 1 / 1;
+}
+
+.ippo-calendar .react-calendar__tile:enabled:hover,
+.ippo-calendar .react-calendar__tile:enabled:focus {
+  background-color: rgba(194, 103, 63, 0.1);
+}
+
+.ippo-calendar .react-calendar__tile:disabled {
+  background: none;
+  color: var(--color-ink-soft);
+  opacity: 0.45;
+}
+
+/* 今日：accent 系のやわらかいハイライト */
+.ippo-calendar .react-calendar__tile--now {
+  background-color: rgba(194, 103, 63, 0.14);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.ippo-calendar .react-calendar__tile--now:enabled:hover,
+.ippo-calendar .react-calendar__tile--now:enabled:focus {
+  background-color: rgba(194, 103, 63, 0.22);
+}
+
+/* 選択日：accent 背景の角丸 */
+.ippo-calendar .react-calendar__tile--active,
+.ippo-calendar .react-calendar__tile--active:enabled:hover,
+.ippo-calendar .react-calendar__tile--active:enabled:focus {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* 選択日上のドットは白寄りにして埋もれを防ぐ */
+.ippo-calendar .react-calendar__tile--active span[aria-hidden='true'] {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

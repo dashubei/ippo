@@ -28,11 +28,10 @@ export const RegisterForm = () => {
     setFormError(null)
     try {
       await registerAccount({
-        name: values.name,
         email: values.email,
         password: values.password,
       })
-      navigate('/exposures', { replace: true })
+      navigate('/home', { replace: true })
     } catch (error) {
       if (applyApiFieldErrors(error, setError)) return
       setFormError('登録に失敗しました。時間をおいて再度お試しください')
@@ -42,15 +41,6 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       {formError && <ErrorText>{formError}</ErrorText>}
-      <Field label="名前" htmlFor="name" error={errors.name?.message}>
-        <TextInput
-          id="name"
-          type="text"
-          autoComplete="name"
-          aria-invalid={Boolean(errors.name)}
-          {...register('name')}
-        />
-      </Field>
       <Field
         label="メールアドレス"
         htmlFor="email"
@@ -88,6 +78,17 @@ export const RegisterForm = () => {
           {...register('passwordConfirm')}
         />
       </Field>
+      <p className="text-center text-xs leading-relaxed text-ink-soft">
+        登録すると、
+        <Link to="/terms" className="font-bold text-accent">
+          利用規約
+        </Link>
+        と
+        <Link to="/privacy" className="font-bold text-accent">
+          プライバシーポリシー
+        </Link>
+        に同意したものとみなします。
+      </p>
       <Button type="submit" loading={isSubmitting}>
         登録する
       </Button>

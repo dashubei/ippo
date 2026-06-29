@@ -11,7 +11,7 @@ import {
 } from '@/features/marketing/lib/quick-check-storage'
 
 // ログイン不要で「いまの行動の強さ」を確かめ、端末に 1 件だけ保存できるツール。
-// トップページ（LP）に埋め込んで、登録前にお試ししてもらう。
+// 登録前にお試ししてもらうため、トップページ（LP）に埋め込む。
 export const QuickCheckTool = () => {
   const [action, setAction] = useState('')
   const [anxiety, setAnxiety] = useState(50)
@@ -29,7 +29,10 @@ export const QuickCheckTool = () => {
   return (
     <div className="flex flex-col gap-4">
       <Card className="flex flex-col gap-4 p-5">
-        <Field label="やってみたい行動（任意）" htmlFor="quick-action">
+        <Field
+          label="やってみたい行動（書かなくてもOK）"
+          htmlFor="quick-action"
+        >
           <TextInput
             id="quick-action"
             placeholder="例: 会議で1回発言する"
@@ -43,7 +46,7 @@ export const QuickCheckTool = () => {
           value={anxiety}
           onChange={setAnxiety}
         />
-        <Button onClick={handleSave}>この端末に保存（1件）</Button>
+        <Button onClick={handleSave}>保存</Button>
       </Card>
 
       {saved && (
@@ -55,14 +58,13 @@ export const QuickCheckTool = () => {
               className="px-3 py-1.5 text-sm text-ink-soft"
               onClick={handleClear}
             >
-              消す
+              削除
             </Button>
           </div>
           <p className="text-ink">{saved.action || '（行動の記入なし）'}</p>
           <p className="text-sm text-ink-soft">不安の強さ: {saved.anxiety}</p>
           <p className="text-xs leading-relaxed text-ink-soft">
-            ※ この端末にのみ 1
-            件だけ保存されます。ブラウザのデータを消すと失われます。
+            登録すると、この一歩を記録として残せます。
           </p>
         </Card>
       )}

@@ -30,3 +30,7 @@ Thumbs.db
 .idea/
 .vscode/
 .zed/
+
+# DL したイラスト素材の配布物一式（使う SVG だけ public/illustrations へ accent 化して配置）
+Flat Assets/
+*:Zone.Identifier

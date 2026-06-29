@@ -37,9 +37,9 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       accent: '#8fb8c9',
       text: '#356273',
       tint: '#eaf3f6',
-      message: 'ほとんど不安はないようです。',
+      message: 'いまはほとんど不安がないようですね。',
       recommendation:
-        'すでにできていることかもしれません。もう少し不安を感じる行動を選ぶと、練習になりやすいです。',
+        'もう慣れていることかもしれません。もう少しだけドキドキする行動を選ぶと、練習になりやすいですよ。',
     }
   }
   if (anxietyLevel <= 40) {
@@ -52,7 +52,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       tint: '#f8f1e0',
       message: '少しだけ不安がありますね。',
       recommendation:
-        '取り組みやすい一方で、得られる練習効果はやや控えめかもしれません。もう一歩だけ挑戦できる行動も探してみましょう。',
+        '取り組みやすそうですね。慣れてきたら、もう一歩だけ踏み込める行動も探してみましょう。',
     }
   }
   if (anxietyLevel <= 70) {
@@ -65,7 +65,7 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       tint: '#e8f4ec',
       message: '向き合う練習にちょうどよい強さです。',
       recommendation:
-        '不安を下げることを目標にする必要はありません。価値に向かって取り組めたこと自体が、一歩です。',
+        '不安を下げることを目標にする必要ありません。あなたの大切にしたいことに向かって取り組めたこと自体が、すでに一歩です。',
     }
   }
   if (anxietyLevel <= 85) {
@@ -76,9 +76,9 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
       accent: '#eca878',
       text: '#8f5526',
       tint: '#fbefe4',
-      message: 'かなり不安が強いようです。',
+      message: 'かなり不安が強いようですね。',
       recommendation:
-        '取り組んでも構いませんが、もう少し小さな一歩に分けると続けやすいかもしれません。',
+        '取り組んでも大丈夫ですが、もう少し小さな一歩に分けると、続けやすくなるかもしれません。',
     }
   }
   return {
@@ -88,8 +88,8 @@ export const getAnxietyJudgment = (anxietyLevel: number): AnxietyJudgment => {
     accent: '#e08c86',
     text: '#984139',
     tint: '#fae8e6',
-    message: '不安がとても強い状態です。',
+    message: '不安がとても強い状態のようですね。',
     recommendation:
-      '無理は禁物です。もう少し取り組みやすい行動から、少しずつ始めてみましょう。',
+      'どうか無理はなさらないでください。もう少し取り組みやすい行動から、少しずつ始めてみましょう。',
   }
 }

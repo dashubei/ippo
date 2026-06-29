@@ -8,7 +8,6 @@ type AuthStatus = 'pending' | 'authenticated' | 'unauthenticated'
 interface RegisterInput {
   email: string
   password: string
-  name: string
 }
 
 interface AuthContextValue {
@@ -80,12 +79,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     persistSession(emailInput)
   }
 
-  const register = async ({
-    email: emailInput,
-    password,
-    name,
-  }: RegisterInput) => {
-    await apiClient.post('/register', { email: emailInput, password, name })
+  const register = async ({ email: emailInput, password }: RegisterInput) => {
+    await apiClient.post('/register', { email: emailInput, password })
     await ensureCsrf()
     persistSession(emailInput)
   }
