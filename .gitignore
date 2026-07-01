@@ -24,6 +24,9 @@ dist/
 PROGRESS.md
 CLAUDE.md
 
+# 私用ドキュメント（実 IP・ドメイン・RDS エンドポイント・パスワード・AWS アカウント ID 等の実値。公開しない）
+docs/private/
+
 # OS / エディタ
 .DS_Store
 Thumbs.db
