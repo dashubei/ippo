@@ -71,6 +71,7 @@ export const AnxietySlider = ({
           step={1}
           value={value}
           onChange={(event) => onChange(Number(event.target.value))}
+          aria-label="不安の強さ（0〜100）"
           aria-invalid={invalid}
           aria-valuetext={`${value}（${judgment.label}）`}
           className="ippo-anxiety-range h-9 w-full cursor-pointer appearance-none rounded-full"

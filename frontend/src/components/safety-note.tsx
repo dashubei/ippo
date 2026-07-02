@@ -6,6 +6,12 @@ const links = [
   { label: 'いのちの電話', href: 'https://www.inochinodenwa.org/' },
 ]
 
+const legalLinks = [
+  { label: '利用規約', href: '/terms' },
+  { label: 'プライバシーポリシー', href: '/privacy' },
+  { label: '免責事項', href: '/disclaimer' },
+]
+
 // 非医療の免責と、つらいときの相談先サインポスト。記録画面で不安を数値化するため
 // アプリ内（ログイン後レイアウト）と公開LPの双方に常設する。
 export const SafetyNote = () => (
@@ -30,5 +36,18 @@ export const SafetyNote = () => (
         </a>
       ))}
     </div>
+    <nav className="mt-1 flex flex-wrap justify-center gap-x-4 gap-y-1">
+      {legalLinks.map((link) => (
+        <a
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="underline decoration-ink-soft/40 underline-offset-2 transition-colors hover:text-ink"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
   </div>
 )

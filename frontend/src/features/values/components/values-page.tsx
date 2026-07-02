@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
-import { BookOpen, Compass } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
+import { Illustration } from '@/components/ui/illustration'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useValues } from '@/features/values/api/values'
 import { ValueForm } from '@/features/values/components/value-form'
@@ -41,21 +43,23 @@ export const ValuesPage = () => {
           価値を読み込めませんでした。時間をおいて再度お試しください
         </ErrorText>
       ) : values.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-8 text-center text-ink-soft">
-          <span
-            aria-hidden="true"
-            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
-          >
-            <Compass size={28} />
-          </span>
-          <p>まだ価値が登録されていません。最初の価値を追加してみましょう。</p>
-          <Link to="/onboarding" className="font-bold text-accent">
-            ガイドにそって決める
+        <div className="flex flex-col items-center gap-4 py-8 text-center text-ink-soft">
+          <Illustration
+            src="/illustrations/peeps/sitting-mid.svg"
+            width={240}
+            height={324}
+            className="w-32"
+          />
+          <p className="leading-relaxed">
+            まだ価値が登録されていません。最初の価値を追加してみましょう。
+          </p>
+          <Link to="/onboarding">
+            <Button variant="secondary">ガイドにそって決める</Button>
           </Link>
         </div>
       ) : (
         <Card className="overflow-hidden">
-          <ul className="divide-y divide-ink/10">
+          <ul className="stagger divide-y divide-ink/10">
             {values.map((value) => (
               <li key={value.id}>
                 <ValueItem value={value} />

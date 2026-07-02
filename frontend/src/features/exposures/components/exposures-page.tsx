@@ -2,11 +2,11 @@ import { useState } from 'react'
 import Calendar from 'react-calendar'
 import type { TileArgs } from 'react-calendar'
 import { Link } from 'react-router-dom'
-import { Footprints } from 'lucide-react'
 import 'react-calendar/dist/Calendar.css'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
+import { Illustration } from '@/components/ui/illustration'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useExposures } from '@/features/exposures/api/exposures'
 import { useValueOptions } from '@/features/exposures/api/value-options'
@@ -144,18 +144,18 @@ export const ExposuresPage = () => {
       )}
 
       {records.length === 0 && (
-        <Card className="flex flex-col items-center gap-3 p-6 text-center text-ink-soft">
-          <span
-            aria-hidden="true"
-            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
-          >
-            <Footprints size={28} />
-          </span>
-          <p>
+        <Card className="flex flex-col items-center gap-4 p-8 text-center text-ink-soft">
+          <Illustration
+            src="/illustrations/peeps/walking.svg"
+            width={240}
+            height={324}
+            className="w-32"
+          />
+          <p className="leading-relaxed">
             まだ振り返る記録はありません。最初の一歩を残すと、ここに積み重なっていきます。
           </p>
-          <Link to="/exposures/new" className="font-bold text-accent">
-            新しく記録する
+          <Link to="/exposures/new">
+            <Button size="lg">新しく記録する</Button>
           </Link>
         </Card>
       )}

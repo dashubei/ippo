@@ -6,18 +6,27 @@
   --color-cream-2: #fdefe2;
   --color-cream-3: #f8e6d6;
   --color-ink: #4b3f36;
-  --color-ink-soft: #8a7d70;
+  /* 補助テキスト。WCAG AA（対 cream で 4.5:1 以上）を満たすよう #8a7d70 から少し濃く調整。 */
+  --color-ink-soft: #6f6155;
   --color-accent: #c2673f;
+  --color-accent-deep: #a5502d;
   --color-danger: #b4453a;
 
   --font-rounded:
     'Zen Maru Gothic', 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN',
     'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
 
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
   --animate-panel-rise: panel-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   --animate-soft-fade: soft-fade 0.4s ease;
   --animate-sheet-up: sheet-up 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   --animate-emoji-pop: emoji-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-rise-in: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pop-in: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite;
 }
 
 @keyframes emoji-pop {
@@ -60,6 +69,80 @@
   }
 }
 
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, -4%) scale(1.06);
+  }
+  66% {
+    transform: translate(-3%, 3%) scale(0.97);
+  }
+}
+
+/* 連続要素の登場を少しずつ遅らせるスタッガー。親に付与し、子が rise-in/pop-in を持つ前提。 */
+.stagger > * {
+  animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > *:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.22s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.28s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.34s;
+}
+.stagger > *:nth-child(7) {
+  animation-delay: 0.4s;
+}
+.stagger > *:nth-child(8) {
+  animation-delay: 0.46s;
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -81,6 +164,31 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 背景に温かみのある淡いブルームを重ね、平坦さを避ける（描画コストの低い固定グラデーション）。 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        38% 30% at 12% 8%,
+        rgba(194, 103, 63, 0.1) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        44% 34% at 92% 22%,
+        rgba(141, 190, 154, 0.12) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        50% 40% at 50% 108%,
+        rgba(194, 103, 63, 0.08) 0%,
+        transparent 70%
+      );
   }
 
   button,

@@ -34,6 +34,15 @@ export const useExposure = (id: number) =>
     },
   })
 
+// 保存直後に遷移すると、遷移先で未マウントだった一覧クエリが古いキャッシュのまま
+// 一瞬描画される（保存前に遷移したように見える）。refetchType:'all' で非アクティブな
+// クエリも再取得し、mutateAsync が完了を待ってから遷移できるようにする。
+const invalidateExposures = (queryClient: ReturnType<typeof useQueryClient>) =>
+  queryClient.invalidateQueries({
+    queryKey: exposuresQueryKey,
+    refetchType: 'all',
+  })
+
 export const useCreateExposure = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -41,8 +50,7 @@ export const useCreateExposure = () => {
       const { data } = await apiClient.post<ExposureRecord>('/exposures', input)
       return data
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: exposuresQueryKey }),
+    onSuccess: () => invalidateExposures(queryClient),
   })
 }
 
@@ -59,8 +67,7 @@ export const useUpdateExposure = () => {
       )
       return data
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: exposuresQueryKey }),
+    onSuccess: () => invalidateExposures(queryClient),
   })
 }
 
@@ -70,7 +77,6 @@ export const useDeleteExposure = () => {
     mutationFn: async (id: number) => {
       await apiClient.delete(`/exposures/${id}`)
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: exposuresQueryKey }),
+    onSuccess: () => invalidateExposures(queryClient),
   })
 }

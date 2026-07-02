@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
@@ -67,10 +68,18 @@ export const ExposureDetailPage = () => {
   const values = useValueOptions()
   const deleteExposure = useDeleteExposure()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [justCompleted, setJustCompleted] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
+  // 削除が成功で確定してから一覧へ遷移する。失敗時は遷移せずエラーを表示する。
   const handleDelete = async () => {
-    await deleteExposure.mutateAsync(exposureId)
-    navigate('/exposures')
+    setDeleteError(null)
+    try {
+      await deleteExposure.mutateAsync(exposureId)
+      navigate('/exposures')
+    } catch {
+      setDeleteError('削除に失敗しました。時間をおいて再度お試しください')
+    }
   }
 
   if (exposure.isPending) {
@@ -106,9 +115,9 @@ export const ExposureDetailPage = () => {
   const isDone = record.done_at !== null
 
   return (
-    <div className="flex animate-soft-fade flex-col gap-4 py-4">
+    <div className="flex animate-soft-fade flex-col gap-4 py-6">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-lg font-bold text-ink">記録の詳細</h1>
+        <h1 className="font-rounded text-2xl font-bold text-ink">記録の詳細</h1>
         <span
           className={`rounded-full px-3 py-1 text-xs font-bold ${
             isDone ? 'bg-accent text-white' : 'bg-ink/10 text-ink-soft'
@@ -118,16 +127,33 @@ export const ExposureDetailPage = () => {
         </span>
       </div>
 
+      {justCompleted && isDone && (
+        <div
+          className="flex animate-pop-in items-start gap-2 rounded-2xl bg-accent/10 px-4 py-3 text-sm leading-relaxed text-ink"
+          role="status"
+        >
+          <Sparkles
+            size={18}
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 text-accent"
+          />
+          <span>振り返りを記録しました。よく取り組めましたね。</span>
+        </div>
+      )}
+
       <Card className="p-5">
         <RecordSummary record={record} valueName={valueName} />
       </Card>
 
       {!isDone && (
-        <Card className="flex flex-col gap-4 p-5">
+        <Card className="flex animate-rise-in flex-col gap-4 p-5">
           <h2 className="font-bold text-ink">
             やってみてどうだったか、振り返る
           </h2>
-          <CompleteExposureForm id={record.id} />
+          <CompleteExposureForm
+            id={record.id}
+            onCompleted={() => setJustCompleted(true)}
+          />
         </Card>
       )}
 
@@ -136,6 +162,7 @@ export const ExposureDetailPage = () => {
           <p className="text-sm text-ink">
             この記録を削除します。取り消せません。記録は、うまくいかなくても残しておくと振り返りの助けになります。
           </p>
+          {deleteError && <ErrorText>{deleteError}</ErrorText>}
           <div className="flex gap-3">
             <Button
               variant="secondary"

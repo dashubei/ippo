@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
+import { Illustration } from '@/components/ui/illustration'
 
 interface OnboardingConfirmStepProps {
   draft: string
@@ -25,9 +26,15 @@ export const OnboardingConfirmStep = ({
       </p>
     </div>
 
-    <Card className="p-5">
+    <Card className="flex flex-col items-center gap-3 p-6 text-center">
+      <Illustration
+        src="/illustrations/peeps/easing.svg"
+        width={240}
+        height={324}
+        className="w-28"
+      />
       <p className="text-xs text-ink-soft">あなたが大切にしたいこと</p>
-      <p className="mt-1 text-lg leading-relaxed font-bold text-ink">{draft}</p>
+      <p className="text-lg leading-relaxed font-bold text-ink">{draft}</p>
     </Card>
 
     {error && <ErrorText>{error}</ErrorText>}

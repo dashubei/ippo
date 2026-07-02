@@ -14,6 +14,14 @@ export const useValues = () =>
     },
   })
 
+// オンボーディング完了時などは一覧を未マウントのまま遷移するため、refetchType:'all' で
+// 非アクティブなクエリも再取得し、遷移先が古いキャッシュを描画しないようにする。
+const invalidateValues = (queryClient: ReturnType<typeof useQueryClient>) =>
+  queryClient.invalidateQueries({
+    queryKey: valuesQueryKey,
+    refetchType: 'all',
+  })
+
 export const useCreateValue = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -21,8 +29,7 @@ export const useCreateValue = () => {
       const { data } = await apiClient.post<UserValue>('/values', input)
       return data
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: valuesQueryKey }),
+    onSuccess: () => invalidateValues(queryClient),
   })
 }
 
@@ -33,8 +40,7 @@ export const useUpdateValue = () => {
       const { data } = await apiClient.patch<UserValue>(`/values/${id}`, input)
       return data
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: valuesQueryKey }),
+    onSuccess: () => invalidateValues(queryClient),
   })
 }
 
@@ -44,7 +50,6 @@ export const useDeleteValue = () => {
     mutationFn: async (id: number) => {
       await apiClient.delete(`/values/${id}`)
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: valuesQueryKey }),
+    onSuccess: () => invalidateValues(queryClient),
   })
 }

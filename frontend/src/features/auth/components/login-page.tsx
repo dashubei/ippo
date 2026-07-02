@@ -15,9 +15,12 @@ export const LoginPage = () => (
         ← トップへ
       </Link>
       <Card className="animate-panel-rise p-6">
-        <h1 className="mb-6 text-center text-2xl font-bold text-ink">
+        <h1 className="text-center font-rounded text-2xl font-bold text-ink">
           ログイン
         </h1>
+        <p className="mb-6 mt-1 text-center text-sm text-ink-soft">
+          おかえりなさい。あなたのペースで続けましょう。
+        </p>
         <LoginForm />
       </Card>
     </div>

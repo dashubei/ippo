@@ -1,11 +1,11 @@
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
-import { Compass } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
 import { Field } from '@/components/ui/field'
+import { Illustration } from '@/components/ui/illustration'
 import { Spinner } from '@/components/ui/spinner'
 import { TextInput } from '@/components/ui/text-input'
 import { Textarea } from '@/components/ui/textarea'
@@ -55,8 +55,13 @@ export const NewExposurePage = () => {
   const noValues = values.isSuccess && values.data.length === 0
 
   return (
-    <div className="flex animate-soft-fade flex-col gap-4 py-4">
-      <h1 className="text-lg font-bold text-ink">新しい記録</h1>
+    <div className="flex animate-soft-fade flex-col gap-5 py-6">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-rounded text-2xl font-bold text-ink">新しい記録</h1>
+        <p className="text-sm leading-relaxed text-ink-soft">
+          これから、あるいはやってみた一歩を書き留めましょう。うまくいってもいかなくても大丈夫です。
+        </p>
+      </header>
 
       {values.isError && (
         <ErrorText>
@@ -65,23 +70,27 @@ export const NewExposurePage = () => {
       )}
 
       {noValues ? (
-        <Card className="flex flex-col items-center gap-3 p-5 text-center text-ink-soft">
-          <span
-            aria-hidden="true"
-            className="grid size-16 place-items-center rounded-full bg-accent/10 text-accent"
-          >
-            <Compass size={28} />
-          </span>
-          <p>
+        <Card className="flex flex-col items-center gap-4 p-6 text-center text-ink-soft">
+          <Illustration
+            src="/illustrations/peeps/sitting-relax.svg"
+            width={240}
+            height={324}
+            className="w-36"
+          />
+          <p className="leading-relaxed">
             まずは大切にしたいこと（価値）を一つ登録してみましょう。そこから一歩が始まります。
           </p>
-          <Link to="/values" className="font-bold text-accent">
-            価値を登録する
+          <Link to="/values">
+            <Button size="lg">価値を登録する</Button>
           </Link>
         </Card>
       ) : (
         <Card className="p-5">
-          <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+          <form
+            onSubmit={onSubmit}
+            noValidate
+            className="stagger flex flex-col gap-4"
+          >
             <Field label="価値" htmlFor="value" error={errors.value?.message}>
               {values.isPending ? (
                 <div className="flex min-h-11 items-center text-ink-soft">

@@ -14,7 +14,15 @@ import {
   type CompleteExposureInput,
 } from '@/features/exposures/schemas'
 
-export const CompleteExposureForm = ({ id }: { id: number }) => {
+interface CompleteExposureFormProps {
+  id: number
+  onCompleted?: () => void
+}
+
+export const CompleteExposureForm = ({
+  id,
+  onCompleted,
+}: CompleteExposureFormProps) => {
   // React Compiler は RHF の register と相性が悪いため除外する。
   'use no memo'
   const updateExposure = useUpdateExposure()
@@ -39,6 +47,7 @@ export const CompleteExposureForm = ({ id }: { id: number }) => {
     }
     try {
       await updateExposure.mutateAsync({ id, ...input, done_at: doneAtIso })
+      onCompleted?.()
     } catch (error) {
       if (applyApiFieldErrors(error, setError)) return
       setError('anxiety_after', {

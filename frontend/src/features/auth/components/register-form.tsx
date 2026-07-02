@@ -80,11 +80,21 @@ export const RegisterForm = () => {
       </Field>
       <p className="text-center text-xs leading-relaxed text-ink-soft">
         登録すると、
-        <Link to="/terms" className="font-bold text-accent">
+        <Link
+          to="/terms"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="font-bold text-accent"
+        >
           利用規約
         </Link>
         と
-        <Link to="/privacy" className="font-bold text-accent">
+        <Link
+          to="/privacy"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="font-bold text-accent"
+        >
           プライバシーポリシー
         </Link>
         に同意したものとみなします。
