@@ -151,7 +151,7 @@ AUTH_COOKIE = {
     "refresh_max_age": int(SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()),
 }
 
-FRONTEND_ORIGINS = ["http://localhost:5173"]
+FRONTEND_ORIGINS = ["http://localhost:5173", "https://ippo-lovat.vercel.app"]
 CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
 CSRF_TRUSTED_ORIGINS = FRONTEND_ORIGINS
 CORS_ALLOW_CREDENTIALS = True
