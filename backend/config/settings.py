@@ -151,11 +151,16 @@ AUTH_COOKIE = {
     "refresh_max_age": int(SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()),
 }
 
-FRONTEND_ORIGINS = ["http://localhost:5173", "https://ippo-lovat.vercel.app"]
+FRONTEND_ORIGINS = [
+    "http://localhost:5173",
+    "https://ippo-lovat.vercel.app",
+    "https://ippo.kanemichi.com",
+]
 CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
 CSRF_TRUSTED_ORIGINS = FRONTEND_ORIGINS
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_DOMAIN = ".kanemichi.com" if not DEBUG else None
 CSRF_COOKIE_SAMESITE = "None" if not DEBUG else "Lax"
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = not DEBUG
