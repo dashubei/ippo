@@ -153,7 +153,6 @@ AUTH_COOKIE = {
 
 FRONTEND_ORIGINS = [
     "http://localhost:5173",
-    "https://ippo-lovat.vercel.app",
     "https://ippo.kanemichi.com",
 ]
 CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
