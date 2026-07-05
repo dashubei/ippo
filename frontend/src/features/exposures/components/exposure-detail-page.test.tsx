@@ -22,7 +22,7 @@ const pendingRecord: ExposureRecord = {
 
 const routes = [
   { path: '/exposures/:id', element: <ExposureDetailPage /> },
-  { path: '/exposures', element: <div>記録一覧</div> },
+  { path: '/history', element: <div>記録一覧</div> },
 ]
 
 describe('ExposureDetailPage', () => {
@@ -40,31 +40,13 @@ describe('ExposureDetailPage', () => {
     expect(await screen.findByText('朝会で発言する')).toBeInTheDocument()
     expect(screen.getByText('これから')).toBeInTheDocument()
 
-    await user.type(screen.getByLabelText('実施日時'), '2026-06-11T09:00')
-    await user.type(screen.getByLabelText('実施後の不安度（0〜100）'), '30')
+    // 実施日時は現在時刻が初期入力され、不安度はスライダー初期値のまま送信できる。
     await user.click(screen.getByRole('button', { name: '振り返りを記録する' }))
 
     expect(await screen.findByText('実施済み')).toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: '振り返りを記録する' }),
     ).not.toBeInTheDocument()
-  })
-
-  test('実施後の不安度に101を入力するとバリデーションエラーになる', async () => {
-    resetExposuresStore([pendingRecord])
-    const user = userEvent.setup()
-    renderWithProviders(<div />, { routes, route: '/exposures/1' })
-
-    await user.type(
-      await screen.findByLabelText('実施日時'),
-      '2026-06-11T09:00',
-    )
-    await user.type(screen.getByLabelText('実施後の不安度（0〜100）'), '101')
-    await user.click(screen.getByRole('button', { name: '振り返りを記録する' }))
-
-    expect(
-      await screen.findByText('不安度は0〜100で入力してください'),
-    ).toBeInTheDocument()
   })
 
   test('削除すると一覧へ遷移する', async () => {

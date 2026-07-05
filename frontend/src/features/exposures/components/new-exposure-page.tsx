@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
@@ -10,6 +11,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { TextInput } from '@/components/ui/text-input'
 import { Textarea } from '@/components/ui/textarea'
 import { applyApiFieldErrors } from '@/lib/form'
+import { clearQuickCheck, loadQuickCheck } from '@/lib/quick-check-storage'
 import { useCreateExposure } from '@/features/exposures/api/exposures'
 import { useValueOptions } from '@/features/exposures/api/value-options'
 import { ActionHelper } from '@/features/exposures/components/action-helper'
@@ -26,6 +28,8 @@ export const NewExposurePage = () => {
   const navigate = useNavigate()
   const createExposure = useCreateExposure()
   const values = useValueOptions()
+  // LP のお試し（quick-check）を最初の記録の下書きに引き継ぐ。初回マウント時に一度だけ読む。
+  const [quickCheck] = useState(loadQuickCheck)
   const {
     register,
     control,
@@ -36,13 +40,18 @@ export const NewExposurePage = () => {
     formState: { errors, isSubmitting },
   } = useForm<CreateExposureForm, unknown, CreateExposureInput>({
     resolver: zodResolver(createExposureSchema),
-    defaultValues: { anxiety_before: 50 },
+    defaultValues: {
+      anxiety_before: quickCheck?.anxiety ?? 50,
+      action: quickCheck?.action || undefined,
+    },
   })
 
   const onSubmit = handleSubmit(async (input) => {
     try {
-      await createExposure.mutateAsync(input)
-      navigate('/exposures', { replace: true })
+      const created = await createExposure.mutateAsync(input)
+      clearQuickCheck()
+      // 作成直後は詳細へ。「これから」の記録から、そのまま振り返りへ進める。
+      navigate(`/exposures/${created.id}`, { replace: true })
     } catch (error) {
       if (applyApiFieldErrors(error, setError)) return
       setError('action', {
@@ -172,7 +181,7 @@ export const NewExposurePage = () => {
                 type="button"
                 variant="secondary"
                 className="flex-1"
-                onClick={() => navigate('/exposures')}
+                onClick={() => navigate('/history')}
               >
                 キャンセル
               </Button>

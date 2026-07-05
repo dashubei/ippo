@@ -2,17 +2,19 @@ import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, test } from 'vitest'
 import { NewExposurePage } from '@/features/exposures/components/new-exposure-page'
+import { clearQuickCheck } from '@/lib/quick-check-storage'
 import { resetExposuresStore } from '@/test/handlers/exposures'
 import { resetValuesStore } from '@/test/handlers/values'
 import { renderWithProviders } from '@/test/test-utils'
 
 const routes = [
   { path: '/exposures/new', element: <NewExposurePage /> },
-  { path: '/exposures', element: <div>記録一覧</div> },
+  { path: '/exposures/:id', element: <div>記録詳細</div> },
 ]
 
 describe('NewExposurePage', () => {
   beforeEach(() => {
+    clearQuickCheck()
     resetExposuresStore([])
     resetValuesStore([
       { id: 1, name: '誠実でいること', created_at: '2026-06-01T00:00:00Z' },
@@ -45,7 +47,7 @@ describe('NewExposurePage', () => {
     expect(alert).toHaveTextContent('価値を選択してください')
   })
 
-  test('正常入力で送信すると一覧へ遷移する', async () => {
+  test('正常入力で送信すると作成した記録の詳細へ遷移する', async () => {
     const user = userEvent.setup()
     renderWithProviders(<div />, { routes, route: '/exposures/new' })
 
@@ -53,6 +55,6 @@ describe('NewExposurePage', () => {
     await user.type(screen.getByLabelText('行動'), '朝会で発言する')
     await user.click(screen.getByRole('button', { name: '記録する' }))
 
-    expect(await screen.findByText('記録一覧')).toBeInTheDocument()
+    expect(await screen.findByText('記録詳細')).toBeInTheDocument()
   })
 })

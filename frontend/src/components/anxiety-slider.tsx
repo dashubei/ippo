@@ -6,6 +6,7 @@ import { useAnxietyAnchors } from '@/hooks/use-anxiety-anchors'
 import { Modal } from '@/components/ui/modal'
 import { AnxietyCalibration } from '@/components/anxiety-calibration'
 import { SliderGuide } from '@/components/slider-guide'
+import { SafetyNote } from '@/components/safety-note'
 
 // 5 ゾーンの色に調和させたトラックのグラデーション。
 const trackGradient = `linear-gradient(to right,
@@ -33,6 +34,7 @@ export const AnxietySlider = ({
   const { anchors, saveAnchors } = useAnxietyAnchors()
   const [guideOpen, setGuideOpen] = useState(false)
   const [calibrateOpen, setCalibrateOpen] = useState(false)
+  const [safetyOpen, setSafetyOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-4">
@@ -115,12 +117,13 @@ export const AnxietySlider = ({
       </div>
 
       {judgment.level === 'hard' && (
-        <Link
-          to="/learn"
+        <button
+          type="button"
+          onClick={() => setSafetyOpen(true)}
           className="text-center text-xs font-bold text-accent underline"
         >
           不安が強すぎると感じたら：安全に使うために
-        </Link>
+        </button>
       )}
 
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -171,6 +174,37 @@ export const AnxietySlider = ({
           onSave={saveAnchors}
           onClose={() => setCalibrateOpen(false)}
         />
+      </Modal>
+      <Modal
+        open={safetyOpen}
+        onClose={() => setSafetyOpen(false)}
+        title="安全に使うために"
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm leading-relaxed text-ink">
+            不安がとても強いときは、無理をせず、いったん立ち止まって大丈夫です。挑戦はもう少し取り組みやすい一歩に分けてみましょう。
+          </p>
+          <div className="rounded-2xl bg-white/60 p-4">
+            <p className="text-sm font-bold text-ink">
+              次のようなときは、自分だけで取り組まず、専門の窓口や支援者に相談してください。
+            </p>
+            <ul className="mt-2 flex flex-col gap-1.5 text-sm leading-relaxed text-ink-soft">
+              <li>・強い希死念慮や、自分を傷つけたい気持ちがあるとき</li>
+              <li>
+                ・抑えられないパニックや、強い動悸・息苦しさが繰り返し起きるとき
+              </li>
+              <li>・現実感のなさや、つらい記憶のフラッシュバックがあるとき</li>
+              <li>・飲酒や薬に頼らないと取り組めないとき</li>
+            </ul>
+          </div>
+          <SafetyNote />
+          <Link
+            to="/learn"
+            className="text-center text-sm font-bold text-accent underline"
+          >
+            詳しい使い方・考え方を見る
+          </Link>
+        </div>
       </Modal>
     </div>
   )

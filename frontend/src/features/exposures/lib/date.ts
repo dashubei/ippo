@@ -51,3 +51,11 @@ export const localInputToIso = (value: string): string | null => {
   if (Number.isNaN(date.getTime())) return null
   return date.toISOString()
 }
+
+// 現在時刻を datetime-local 入力値（"YYYY-MM-DDTHH:mm"、ローカル）で返す。
+// 「やった直後に記録する」動線が大半なので、実施日時の初期値に使い入力の手間を省く。
+export const nowLocalInput = (): string => {
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`
+}

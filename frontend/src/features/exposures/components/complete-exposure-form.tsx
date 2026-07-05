@@ -1,13 +1,13 @@
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AnxietySlider } from '@/components/anxiety-slider'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { TextInput } from '@/components/ui/text-input'
 import { Textarea } from '@/components/ui/textarea'
 import { applyApiFieldErrors } from '@/lib/form'
-import { useAnxietyAnchors } from '@/hooks/use-anxiety-anchors'
 import { useUpdateExposure } from '@/features/exposures/api/exposures'
-import { localInputToIso } from '@/features/exposures/lib/date'
+import { localInputToIso, nowLocalInput } from '@/features/exposures/lib/date'
 import {
   completeExposureSchema,
   type CompleteExposureForm as CompleteExposureFormValues,
@@ -26,14 +26,15 @@ export const CompleteExposureForm = ({
   // React Compiler は RHF の register と相性が悪いため除外する。
   'use no memo'
   const updateExposure = useUpdateExposure()
-  const { anchors } = useAnxietyAnchors()
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<CompleteExposureFormValues, unknown, CompleteExposureInput>({
     resolver: zodResolver(completeExposureSchema),
+    defaultValues: { done_at: nowLocalInput(), anxiety_after: 50 },
   })
 
   const onSubmit = handleSubmit(async (input) => {
@@ -69,27 +70,24 @@ export const CompleteExposureForm = ({
       </Field>
 
       <Field
-        label="実施後の不安度（0〜100）"
+        label="実施後の不安の強さ（0〜100）"
         htmlFor="anxiety_after"
         error={errors.anxiety_after?.message}
       >
-        <TextInput
-          id="anxiety_after"
-          type="number"
-          inputMode="numeric"
-          min={0}
-          max={100}
-          aria-invalid={Boolean(errors.anxiety_after)}
-          {...register('anxiety_after')}
+        <Controller
+          control={control}
+          name="anxiety_after"
+          render={({ field }) => (
+            <AnxietySlider
+              id="anxiety_after"
+              value={Number(field.value ?? 50)}
+              onChange={field.onChange}
+              invalid={Boolean(errors.anxiety_after)}
+            />
+          )}
         />
       </Field>
-      {anchors && (
-        <p className="-mt-2 text-xs leading-relaxed text-ink">
-          あなたの目盛り： 0＝{anchors.low || '—'} ／ 50＝{anchors.mid || '—'}{' '}
-          ／ 100＝{anchors.high || '—'}
-        </p>
-      )}
-      <p className="text-xs leading-relaxed text-ink-soft">
+      <p className="-mt-1 text-xs leading-relaxed text-ink-soft">
         下がっていなくても問題ありません。取り組めたこと自体が一歩です。
       </p>
 
