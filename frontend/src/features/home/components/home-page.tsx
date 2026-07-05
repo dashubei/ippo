@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
 import { Illustration } from '@/components/ui/illustration'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useExposures } from '@/features/exposures/api/exposures'
 import { useValues } from '@/features/values/api/values'
 
 // 登録済みの価値を控えめに見せるチップ。多すぎると圧迫感が出るため数を絞る。
@@ -23,6 +24,10 @@ const ValueChips = ({ names }: { names: string[] }) => (
 
 export const HomePage = () => {
   const { data: values, isPending, isError } = useValues()
+  const { data: exposures } = useExposures()
+
+  // 計画したが未実施の記録。実行→振り返りへ促すためホームに前出しする。
+  const pendingExposures = exposures?.filter((record) => !record.done_at) ?? []
 
   return (
     <div className="flex flex-col gap-6 py-6">
@@ -69,6 +74,46 @@ export const HomePage = () => {
             </Button>
           </Link>
         </Card>
+
+        {/* 計画済みで未実施の一歩。実行して振り返るところまでを促す。 */}
+        {pendingExposures.length > 0 && (
+          <section className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-bold text-ink">やってみた？ 予定した一歩</h2>
+              {pendingExposures.length > 2 && (
+                <Link to="/history" className="text-sm font-bold text-accent">
+                  すべて見る
+                </Link>
+              )}
+            </div>
+            <ul className="flex flex-col gap-3">
+              {pendingExposures.slice(0, 2).map((record) => (
+                <li key={record.id}>
+                  <Link to={`/exposures/${record.id}`} className="block">
+                    <Card
+                      interactive
+                      className="flex min-h-11 items-center gap-4 p-4"
+                    >
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate font-bold text-ink">
+                          {record.action}
+                        </span>
+                        <span className="text-sm text-ink-soft">
+                          やってみて、振り返りを記録する
+                        </span>
+                      </div>
+                      <ArrowRight
+                        size={18}
+                        aria-hidden="true"
+                        className="shrink-0 text-ink-soft"
+                      />
+                    </Card>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* 価値が 0 件のときは、まず価値設定にやさしく誘導する。 */}
         {isPending ? (

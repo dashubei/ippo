@@ -8,7 +8,7 @@ import {
   clearQuickCheck,
   loadQuickCheck,
   saveQuickCheck,
-} from '@/features/marketing/lib/quick-check-storage'
+} from '@/lib/quick-check-storage'
 
 // ログイン不要で「いまの行動の強さ」を確かめ、端末に 1 件だけ保存できるツール。
 // 登録前にお試ししてもらうため、トップページ（LP）に埋め込む。

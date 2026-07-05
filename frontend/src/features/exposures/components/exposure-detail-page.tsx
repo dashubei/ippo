@@ -5,6 +5,7 @@ import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { ErrorText } from '@/components/ui/error-text'
+import { Modal } from '@/components/ui/modal'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   useDeleteExposure,
@@ -28,36 +29,52 @@ const DetailRow = ({
   </div>
 )
 
-const RecordSummary = ({
-  record,
-  valueName,
-}: {
-  record: ExposureRecord
-  valueName: string
-}) => (
-  <dl className="flex flex-col gap-3">
-    <DetailRow label="価値">{valueName}</DetailRow>
-    <DetailRow label="行動">{record.action}</DetailRow>
-    <DetailRow label="実施前の不安度">{record.anxiety_before}</DetailRow>
-    {record.memo_before && (
-      <DetailRow label="実施前のメモ">
-        <span className="whitespace-pre-wrap">{record.memo_before}</span>
-      </DetailRow>
-    )}
-    {record.done_at && (
-      <>
-        <DetailRow label="実施日時">{formatDateTime(record.done_at)}</DetailRow>
-        {record.anxiety_after !== null && (
-          <DetailRow label="実施後の不安度">{record.anxiety_after}</DetailRow>
+// 予想（やる前）と実際（やってみて）を横に並べて見くらべる。
+// 抑制学習では「予想と実際のズレ」に気づくこと自体が学習になるため、
+// before/after を別々に流し読みさせず、対比の形で見せる。
+const ExpectationContrast = ({ record }: { record: ExposureRecord }) => (
+  <Card className="flex flex-col gap-4 p-5">
+    <div className="flex flex-col gap-1">
+      <h2 className="font-bold text-ink">予想と、実際</h2>
+      <p className="text-sm leading-relaxed text-ink-soft">
+        やる前の見立てと、やってみた実際を見くらべてみましょう。ズレに気づくことが、次の一歩の助けになります。
+      </p>
+    </div>
+    <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-col gap-2 rounded-2xl bg-white/60 p-3">
+        <p className="text-xs font-bold text-ink-soft">やる前の予想</p>
+        <p className="text-sm text-ink">
+          不安{' '}
+          <span className="font-bold tabular-nums">
+            {record.anxiety_before}
+          </span>
+        </p>
+        {record.memo_before ? (
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-ink">
+            {record.memo_before}
+          </p>
+        ) : (
+          <p className="text-sm text-ink-soft">（メモなし）</p>
         )}
-        {record.memo_after && (
-          <DetailRow label="振り返りメモ">
-            <span className="whitespace-pre-wrap">{record.memo_after}</span>
-          </DetailRow>
+      </div>
+      <div className="flex flex-col gap-2 rounded-2xl bg-accent/10 p-3">
+        <p className="text-xs font-bold text-ink-soft">やってみた実際</p>
+        <p className="text-sm text-ink">
+          不安{' '}
+          <span className="font-bold tabular-nums">
+            {record.anxiety_after ?? '—'}
+          </span>
+        </p>
+        {record.memo_after ? (
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-ink">
+            {record.memo_after}
+          </p>
+        ) : (
+          <p className="text-sm text-ink-soft">（メモなし）</p>
         )}
-      </>
-    )}
-  </dl>
+      </div>
+    </div>
+  </Card>
 )
 
 export const ExposureDetailPage = () => {
@@ -76,7 +93,7 @@ export const ExposureDetailPage = () => {
     setDeleteError(null)
     try {
       await deleteExposure.mutateAsync(exposureId)
-      navigate('/exposures')
+      navigate('/history')
     } catch {
       setDeleteError('削除に失敗しました。時間をおいて再度お試しください')
     }
@@ -101,7 +118,7 @@ export const ExposureDetailPage = () => {
         <ErrorText>
           記録を読み込めませんでした。時間をおいて再度お試しください
         </ErrorText>
-        <Button variant="secondary" onClick={() => navigate('/exposures')}>
+        <Button variant="secondary" onClick={() => navigate('/history')}>
           一覧へ戻る
         </Button>
       </div>
@@ -142,8 +159,36 @@ export const ExposureDetailPage = () => {
       )}
 
       <Card className="p-5">
-        <RecordSummary record={record} valueName={valueName} />
+        <dl className="flex flex-col gap-3">
+          <DetailRow label="価値">{valueName}</DetailRow>
+          <DetailRow label="行動">{record.action}</DetailRow>
+          {record.done_at && (
+            <DetailRow label="実施日時">
+              {formatDateTime(record.done_at)}
+            </DetailRow>
+          )}
+        </dl>
       </Card>
+
+      {isDone ? (
+        <ExpectationContrast record={record} />
+      ) : (
+        <Card className="flex flex-col gap-3 p-5">
+          <h2 className="font-bold text-ink">やる前の見立て</h2>
+          <dl className="flex flex-col gap-3">
+            <DetailRow label="実施前の不安の強さ">
+              {record.anxiety_before}
+            </DetailRow>
+            {record.memo_before && (
+              <DetailRow label="やる前のメモ（予想）">
+                <span className="whitespace-pre-wrap">
+                  {record.memo_before}
+                </span>
+              </DetailRow>
+            )}
+          </dl>
+        </Card>
+      )}
 
       {!isDone && (
         <Card className="flex animate-rise-in flex-col gap-4 p-5">
@@ -157,9 +202,31 @@ export const ExposureDetailPage = () => {
         </Card>
       )}
 
-      {confirmingDelete ? (
-        <Card className="flex flex-col gap-3 p-5">
-          <p className="text-sm text-ink">
+      <div className="flex gap-3">
+        <Button
+          variant="secondary"
+          className="flex-1"
+          onClick={() => navigate('/history')}
+        >
+          一覧へ戻る
+        </Button>
+        <Button
+          variant="ghost"
+          className="flex-1 text-danger"
+          onClick={() => setConfirmingDelete(true)}
+        >
+          削除
+        </Button>
+      </div>
+
+      <Modal
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        title="記録を削除しますか"
+        dismissibleByBackdrop={false}
+      >
+        <div className="flex flex-col gap-3">
+          <p className="text-sm leading-relaxed text-ink">
             この記録を削除します。取り消せません。記録は、うまくいかなくても残しておくと振り返りの助けになります。
           </p>
           {deleteError && <ErrorText>{deleteError}</ErrorText>}
@@ -180,25 +247,8 @@ export const ExposureDetailPage = () => {
               削除する
             </Button>
           </div>
-        </Card>
-      ) : (
-        <div className="flex gap-3">
-          <Button
-            variant="secondary"
-            className="flex-1"
-            onClick={() => navigate('/exposures')}
-          >
-            一覧へ戻る
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex-1 text-danger"
-            onClick={() => setConfirmingDelete(true)}
-          >
-            削除
-          </Button>
         </div>
-      )}
+      </Modal>
     </div>
   )
 }

@@ -193,7 +193,7 @@ export const LearnPage = () => {
         </Section>
 
         <div className="pb-[calc(env(safe-area-inset-bottom)+1rem)] text-center">
-          <Link to="/exposures" className="text-sm font-bold text-accent">
+          <Link to="/exposures/new" className="text-sm font-bold text-accent">
             記録をはじめる
           </Link>
         </div>
