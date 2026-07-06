@@ -1,8 +1,15 @@
 import os
+import sys
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# manage.py test 実行中はスロットルを実質無効化する
+# （setUpで毎回 /api/login を叩くテストが多く、本番レートのままだと
+# 5回目以降のログインがブロックされCookie未セット→後続401連鎖になるため）
+TESTING = "test" in sys.argv
 
 
 # Quick-start development settings - unsuitable for production
@@ -93,7 +100,9 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        ),
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -131,9 +140,12 @@ REST_FRAMEWORK = {
         "accounts.authentication.CookieJWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
+    "DEFAULT_THROTTLE_RATES": {
+        "login": "1000/min" if TESTING else "5/min",
+        "register": "1000/min" if TESTING else "3/hour",
+    },
 }
-
-from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),

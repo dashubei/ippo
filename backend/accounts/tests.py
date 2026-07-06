@@ -142,7 +142,7 @@ class DeleteAccountViewTest(APITestCase):
         self.client.get("/api/csrf")
         csrf_token = self.client.cookies["csrftoken"].value
 
-        response = self.client.post(
+        self.client.post(
             "/api/delete-account",
             {"password": self.password},
             format="json",
@@ -150,6 +150,27 @@ class DeleteAccountViewTest(APITestCase):
         )
         self.assertEqual(UserValue.objects.count(), 0)
         self.assertEqual(ExposureRecord.objects.count(), 0)
+
+
+class MeViewTest(APITestCase):
+    def setUp(self):
+        self.email = "user@example.com"
+        self.password = "test123"
+        User.objects.create_user(email=self.email, password=self.password)
+
+    def test_me_authenticated(self):
+        self.client.post(
+            "/api/login",
+            {"email": self.email, "password": self.password},
+            format="json",
+        )
+        response = self.client.get("/api/me")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["email"], self.email)
+
+    def test_me_unauthenticated(self):
+        response = self.client.get("/api/me")
+        self.assertEqual(response.status_code, 401)
 
 
 class CSRFViewTest(APITestCase):

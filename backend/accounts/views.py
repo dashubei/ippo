@@ -16,6 +16,7 @@ from .serializers import RegisterSerializer
 
 class RegisterView(APIView):
     permission_classes = []
+    throttle_scope = "register"
 
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
@@ -35,6 +36,8 @@ class RegisterView(APIView):
 
 
 class CookieTokenObtainPairView(TokenObtainPairView):
+    throttle_scope = "login"
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         access_token = response.data["access"]
@@ -113,6 +116,17 @@ def set_auth_cookie(response, access, refresh):
         secure=settings.AUTH_COOKIE["secure"],
         samesite=settings.AUTH_COOKIE["samesite"],
     )
+
+
+class MeView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response(
+            {
+                "id": request.user.id,
+                "email": request.user.email,
+                "name": request.user.name,
+            }
+        )
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
