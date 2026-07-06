@@ -33,19 +33,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.getItem(EMAIL_KEY),
   )
 
-  // 起動時に refresh で本人確認（200=ログイン中 / 401=未ログイン）。バックエンドに /me が無いため refresh を probe に使う。
+  // 起動時に GET /me で本人確認（200=ログイン中 / 401=未ログイン）。
+  // access 失効時は axios interceptor が自動で /refresh を挟むため、無条件の refresh 回転は起きない。
   useEffect(() => {
     let active = true
     const bootstrap = async () => {
-      // 一度もログインしていない（email 記録なし）端末では refresh probe を打たない。
-      // 未ログイン訪問者への 401 ノイズと、リロード毎の refresh トークン回転を避ける。
+      // 一度もログインしていない（email 記録なし）端末では probe を打たない（未ログイン訪問者への 401 ノイズ回避）。
       if (!localStorage.getItem(EMAIL_KEY)) {
         setStatus('unauthenticated')
         return
       }
-      await ensureCsrf()
       try {
-        await apiClient.post('/refresh')
+        await apiClient.get('/me')
+        await ensureCsrf()
         if (active) setStatus('authenticated')
       } catch {
         if (!active) return

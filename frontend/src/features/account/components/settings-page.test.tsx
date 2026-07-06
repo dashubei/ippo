@@ -19,7 +19,7 @@ const routes = [
 ]
 
 const renderSettings = () => {
-  // 起動時 bootstrap で refresh probe が走るよう、ログイン済み端末を模す。
+  // 起動時 bootstrap で /me probe が走るよう、ログイン済み端末を模す。
   localStorage.setItem('ippo:email', 'test@example.com')
   return renderWithProviders(<div />, { routes, route: '/settings' })
 }

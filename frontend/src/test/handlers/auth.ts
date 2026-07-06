@@ -7,6 +7,9 @@ const url = (path: string) => `${env.apiBaseUrl}${path}`
 // server.use(...) で上書きする。
 export const authHandlers = [
   http.get(url('/csrf'), () => new HttpResponse(null, { status: 200 })),
+  http.get(url('/me'), () =>
+    HttpResponse.json({ id: 1, email: 'test@example.com', name: '' }),
+  ),
   http.post(url('/refresh'), () => new HttpResponse(null, { status: 200 })),
   http.post(url('/login'), () => new HttpResponse(null, { status: 200 })),
   http.post(url('/register'), () => new HttpResponse(null, { status: 201 })),
