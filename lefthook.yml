@@ -1,5 +1,6 @@
-# Git hooks（lefthook）。フロントエンドの lint / format / test を実行する。
+# Git hooks（lefthook）。フロントエンド・バックエンドの lint / format / test を実行する。
 # pnpm のルートは frontend/ なので、各コマンドは root: frontend/ で実行する。
+# backend は venv 内の ruff バイナリを直接呼ぶ（shell の activate に依存させないため）。
 pre-commit:
   parallel: true
   commands:
@@ -11,6 +12,14 @@ pre-commit:
       root: frontend/
       glob: "*.{ts,tsx,json,css,html,md}"
       run: pnpm format:check
+    backend-ruff-check:
+      root: backend/
+      glob: "*.py"
+      run: .venv/bin/ruff check {staged_files}
+    backend-ruff-format:
+      root: backend/
+      glob: "*.py"
+      run: .venv/bin/ruff format --check {staged_files}
 
 pre-push:
   commands:
