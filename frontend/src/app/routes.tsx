@@ -126,6 +126,14 @@ export const routes: RouteObject[] = [
                   ).ExposureDetailPage,
                 }),
               },
+              {
+                path: '/settings',
+                lazy: async () => ({
+                  Component: (
+                    await import('@/features/account/components/settings-page')
+                  ).SettingsPage,
+                }),
+              },
             ],
           },
         ],

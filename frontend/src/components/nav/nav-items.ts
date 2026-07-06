@@ -8,4 +8,5 @@ export const navItems: NavItem[] = [
   { to: '/history', label: '記録' },
   { to: '/values', label: '価値' },
   { to: '/learn', label: '使い方' },
+  { to: '/settings', label: '設定' },
 ]

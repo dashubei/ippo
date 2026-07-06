@@ -16,9 +16,12 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>
   register: (input: RegisterInput) => Promise<void>
   logout: () => Promise<void>
+  clearSession: () => void
 }
 
 const EMAIL_KEY = 'ippo:email'
+// 退会完了をログイン画面へ伝える一時フラグ。遷移方法に依存せず橋渡しするため sessionStorage を使う。
+export const ACCOUNT_DELETED_KEY = 'ippo:account-deleted'
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 // GET /api/csrf で csrftoken Cookie を取得（変更系リクエストの X-CSRFToken に使う）。
@@ -85,18 +88,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     persistSession(emailInput)
   }
 
+  // サーバへ通知せずクライアント側の認証状態だけをクリアする（退会後など、既に Cookie が無効な場面で使う）。
+  const clearSession = () => {
+    localStorage.removeItem(EMAIL_KEY)
+    setEmail(null)
+    setStatus('unauthenticated')
+  }
+
   const logout = async () => {
     try {
       await apiClient.post('/logout')
     } catch {
       // refresh が失効済みでもクライアント状態はクリアする
     }
-    localStorage.removeItem(EMAIL_KEY)
-    setEmail(null)
-    setStatus('unauthenticated')
+    clearSession()
   }
 
-  const value: AuthContextValue = { status, email, login, register, logout }
+  const value: AuthContextValue = {
+    status,
+    email,
+    login,
+    register,
+    logout,
+    clearSession,
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -78,6 +78,24 @@ class LogoutView(APIView):
         return response
 
 
+class DeleteAccountView(APIView):
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get(settings.AUTH_COOKIE["refresh"])
+        password = request.data.get("password")
+        if not request.user.check_password(password):
+            return Response({"password": ["パスワードが正しくありません"]}, status=400)
+        if refresh_token is not None:
+            try:
+                RefreshToken(refresh_token).blacklist()
+            except TokenError:
+                pass
+        request.user.delete()
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie(settings.AUTH_COOKIE["access"])
+        response.delete_cookie(settings.AUTH_COOKIE["refresh"])
+        return response
+
+
 def set_auth_cookie(response, access, refresh):
     response.set_cookie(
         key=settings.AUTH_COOKIE["access"],

@@ -11,4 +11,8 @@ export const authHandlers = [
   http.post(url('/login'), () => new HttpResponse(null, { status: 200 })),
   http.post(url('/register'), () => new HttpResponse(null, { status: 201 })),
   http.post(url('/logout'), () => new HttpResponse(null, { status: 200 })),
+  http.post(
+    url('/delete-account'),
+    () => new HttpResponse(null, { status: 204 }),
+  ),
 ]
