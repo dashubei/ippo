@@ -4,6 +4,8 @@
 
 **🔗 公開デモ: [ippo.kanemichi.com](https://ippo.kanemichi.com/)**
 
+![ippo の画面](docs/images/ippo.webp)
+
 - **誰のためか**：人前での発言・交流など、社交場面で不安を感じる思春期以上の人。
 - **何ができるか**：怖いと感じる行動（曝露）を「どんな価値に繋がるか」とともに記録し、実施前後の不安を残して、カレンダーで振り返れます。
 - **何のためか**：心理学（CBT／ACT）の考え方を、誰でも手軽に使える形にすることを目指した個人開発プロジェクトです。
@@ -44,9 +46,33 @@ python3 -m venv .venv
 source .venv/bin/activate     # Linux / WSL / macOS
 # .venv\Scripts\activate      # Windows
 pip install -r requirements.txt
+cp .env.example .env          # SECRET_KEY を設定（DEBUG=True なら SQLite で動作）
 python manage.py migrate
 python manage.py runserver
 ```
+
+```bash
+# フロントエンド（別ターミナル）
+cd frontend
+pnpm install
+cp .env.example .env.local    # 既定値（http://localhost:8000/api）のままで OK
+pnpm dev
+```
+
+## テスト
+認証境界とユーザーごとのデータ分離は、自動テストで担保しています。
+
+```bash
+# バックエンド（Django / DRF・32本）
+cd backend && python manage.py test
+
+# フロントエンド（Vitest ／ Playwright E2E）
+cd frontend && pnpm test:run
+cd frontend && pnpm test:e2e
+```
+
+- **バックエンド（32本）**：登録・ログイン・トークン更新・退会（関連レコードのカスケード削除）などの認証境界／他ユーザーのデータへの参照・更新・削除の遮断（404/400）／CSRF 検証（`APIClient(enforce_csrf_checks=True)`）
+- **フロントエンド**：主要ページの結合テスト（Vitest）と主要導線の E2E（Playwright）。詳細は [docs/frontend/TESTING.md](docs/frontend/TESTING.md)
 
 ## ドキュメント
 - [開発ガイド](docs/DEVELOPMENT.md)
