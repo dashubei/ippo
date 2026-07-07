@@ -2,8 +2,11 @@ User-agent: *
 Allow: /$
 Allow: /login
 Allow: /register
+Disallow: /home
+Disallow: /onboarding
 Disallow: /values
+Disallow: /history
 Disallow: /exposures
+Disallow: /settings
 
-# デプロイ時に本番ドメインへ置換すること
-Sitemap: https://REPLACE_WITH_SITE_ORIGIN/sitemap.xml
+Sitemap: https://ippo.kanemichi.com/sitemap.xml

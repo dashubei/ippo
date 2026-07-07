@@ -3,14 +3,19 @@ import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
+import type { ESBuildOptions } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  esbuild:
+    mode === 'production'
+      ? ({ drop: ['console', 'debugger'] } as ESBuildOptions)
+      : undefined,
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -28,4 +33,4 @@ export default defineConfig({
     css: true,
     exclude: ['**/node_modules/**', '**/dist/**', 'e2e/**'],
   },
-})
+}))
