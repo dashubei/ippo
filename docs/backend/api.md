@@ -10,7 +10,7 @@
 - **CSRF**：Cookie 方式のため変更系（POST/PATCH/DELETE）は `X-CSRFToken` ヘッダ必須（double-submit cookie）。`GET /api/csrf` で `csrftoken` Cookie を取得し、その値をヘッダに載せる。安全メソッド（GET 等）は対象外。
 - **データ分離**：一覧・取得は URL に `user_id` を含めず、**トークンの本人**で絞り込む。他人のデータは返さない。
 - **ステータス**：作成 `201` ／ 取得・更新 `200` ／ 削除 `204` ／ 入力不正 `400` ／ 未認証 `401` ／ 権限なし `403` ／ 不存在 `404`。
-- **試用**：ゲストログイン機能は設けず、**練習用アカウント**を事前作成し、その資格情報を README に記載して試用してもらう。
+- **試用**：ゲストログイン機能は設けず、**自己登録方式**（公開サイトから新規登録して試用してもらう）。
 
 ## 認証
 | メソッド | パス | 役割 | 認証 | リクエスト | 成功 |
@@ -63,4 +63,4 @@
 - **実施後の追記**は新規作成ではなく既存 1 件の部分更新なので `PATCH /api/exposures/{id}`。`done_at` が入った時点で「実施済み」とみなす。
 - 状態を変えない取得は `GET`、状態を変える操作は `POST`/`PATCH`/`DELETE` に割り当てる（`GET` は安全・body を持たない）。
 - **認証は httpOnly Cookie 方式**：トークンを JS から不可視にし XSS 窃取を防ぐ。引き換えに CSRF 対策（`csrftoken` Cookie と `X-CSRFToken` ヘッダの double-submit）を `CookieJWTAuthentication` 内で**変更系のみ**実施。Cookie 属性は `settings.AUTH_COOKIE` に集約し、`set_auth_cookie` ヘルパーで発行を共通化。
-- **register の `name`**：現状 `User.name` に `blank=True` が無いため DRF 上は**必須**。任意にするにはモデルに `blank=True` を追加する（残タスク）。
+- **register の `name`**：`User.name` に `blank=True` を設定済みのため任意（省略可）。

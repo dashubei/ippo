@@ -153,8 +153,8 @@ pip install -r backend/requirements.txt gunicorn mysqlclient
       - 設定値は 3 種類に分けて考える：**env から読む**（SECRET_KEY・DB 認証・ALLOWED_HOSTS）/ **DEBUG から計算**（Cookie の samesite・secure）/ **固定値べた書き**（STATIC_ROOT のパス・SECURE_PROXY_SSL_HEADER のタプル）。全部 env にしようとすると壊れる。
 - [x] **`SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')`**: Nginx→Gunicorn 間は平文 HTTP。これが無いと Django が「HTTP 接続」と誤認し、`Secure` Cookie を発行しない／`SECURE_SSL_REDIRECT` がリダイレクトループになる。§7 の Nginx `X-Forwarded-Proto` とセット。
 - [x] `SECURE_SSL_REDIRECT`・HSTS（`SECURE_HSTS_SECONDS` 等）: certbot 側でも 80→443 させるので二重になるが害は小さい。HSTS は本番のみ。
-- [ ] **throttling**（DRF）: 要件のブルートフォース対策。ログイン等にレート制限。（⏳ 未実施・残タスク）
-- [x] `migrate` 実行 → **練習用アカウント作成**（資格情報は README のデプロイ後記入 or `docs/private/`）。
+- [x] **throttling**（DRF）: 要件のブルートフォース対策。ログイン等にレート制限。（実施済み）
+- [x] `migrate` 実行 → **自己登録方式**（公開サイトから新規登録して試用）。
 
 ---
 

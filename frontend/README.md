@@ -65,7 +65,7 @@ src/
 - axios は `withCredentials: true`。アクセストークン/リフレッシュトークンは httpOnly Cookie のため JS からは読めない。
 - 変更系（POST/PATCH/DELETE）には `csrftoken` Cookie の値を `X-CSRFToken` ヘッダで送る（`GET /api/csrf` で取得）。
 - 401 を受けたら axios interceptor が `POST /api/refresh` を 1 回試行し、失敗したら認証状態をクリアしてログインへ。
-- 起動時の本人確認は `localStorage` の email フラグがある場合のみ `POST /api/refresh` を probe する（未ログイン端末への 401 ノイズ回避）。バックエンドに軽量な `GET /api/me` が用意されればそちらが望ましい。
+- 起動時の本人確認は `localStorage` の email フラグがある場合のみ `GET /api/me` で行う（未ログイン端末への 401 ノイズ回避）。
 
 ## テスト
 
@@ -75,21 +75,16 @@ src/
 ## デプロイ（Vercel）
 
 - `vercel.json` に SPA リライトとセキュリティヘッダ（HSTS / CSP など）を設定済み。
-- **デプロイ前に置換が必要なプレースホルダ**:
-  - `vercel.json` の CSP `connect-src` の `https://REPLACE_WITH_API_ORIGIN` を本番バックエンド API のオリジンに。
-  - `public/robots.txt` / `public/sitemap.xml` / `index.html` の `og:url` の `REPLACE_WITH_SITE_ORIGIN` を本番フロントエンドのオリジンに。
+- 本番オリジンは各ファイルに直書き済み（フォークして別ドメインで運用する場合はここを差し替える）:
+  - `vercel.json` の CSP `connect-src` = バックエンド API `https://ippo-api.kanemichi.com`。
+  - `public/robots.txt` / `public/sitemap.xml` / `index.html` の `og:url` = フロント `https://ippo.kanemichi.com`。
 - CSP は `script-src 'self'`（インラインスクリプト不使用）。`style-src` はインラインスタイル・Google Fonts のため `'unsafe-inline'` を許可している。
 
 ## SEO
 
-- 公開トップ（`/`）の OG / Twitter カード / JSON-LD は `index.html` に静的記載（OG スクレイパは JS を実行しないため）。記録系ページ（`/values`・`/exposures`）は `noindex`。
+- 公開トップ（`/`）の OG / Twitter カード / JSON-LD は `index.html` に静的記載（OG スクレイパは JS を実行しないため）。認証必須の記録系ページ（`/home`・`/values`・`/history`・`/settings` など）は `noindex`。
 - 本格的なビルド時プリレンダ（SSG）は、React Router v7 の framework mode（`ssr: false` + `prerender: ['/']`）への移行で実現できる。現状は library mode のため、静的メタで対応し SSG 移行はフォローアップとする。
 
-## 練習用アカウント
+## 試用
 
-ゲストログインは設けない。バックエンドで事前作成した練習用アカウントの資格情報を以下に記載する（デプロイ時に記入）。
-
-```
-メールアドレス: （記入）
-パスワード: （記入）
-```
+ゲストログインは設けない。公開サイトから新規登録してすぐに試せる（メールアドレスとパスワードのみ）。退会（アカウント削除）は設定画面から行える。
