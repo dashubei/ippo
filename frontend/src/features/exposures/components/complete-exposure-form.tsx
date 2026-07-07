@@ -83,13 +83,11 @@ export const CompleteExposureForm = ({
               value={Number(field.value ?? 50)}
               onChange={field.onChange}
               invalid={Boolean(errors.anxiety_after)}
+              phase="after"
             />
           )}
         />
       </Field>
-      <p className="-mt-1 text-xs leading-relaxed text-ink-soft">
-        下がっていなくても問題ありません。取り組めたこと自体が一歩です。
-      </p>
 
       <Field
         label="振り返りメモ（任意）"

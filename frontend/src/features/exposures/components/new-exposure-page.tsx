@@ -157,6 +157,7 @@ export const NewExposurePage = () => {
                     value={Number(field.value ?? 50)}
                     onChange={field.onChange}
                     invalid={Boolean(errors.anxiety_before)}
+                    phase="before"
                   />
                 )}
               />

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { HelpCircle, Ruler } from 'lucide-react'
+import { HelpCircle, Ruler, Sprout } from 'lucide-react'
 import { getAnxietyJudgment } from '@/lib/judgment'
 import { useAnxietyAnchors } from '@/hooks/use-anxiety-anchors'
 import { Modal } from '@/components/ui/modal'
@@ -22,6 +22,8 @@ interface AnxietySliderProps {
   value: number
   onChange: (value: number) => void
   invalid?: boolean
+  /** 'before'=挑戦の強さガイドを出す / 'after'=体験の言語化に寄せる（挑戦難易度の判定は出さない） */
+  phase?: 'before' | 'after'
 }
 
 export const AnxietySlider = ({
@@ -29,7 +31,9 @@ export const AnxietySlider = ({
   value,
   onChange,
   invalid,
+  phase = 'before',
 }: AnxietySliderProps) => {
+  const isAfter = phase === 'after'
   const judgment = getAnxietyJudgment(value)
   const { anchors, saveAnchors } = useAnxietyAnchors()
   const [guideOpen, setGuideOpen] = useState(false)
@@ -39,27 +43,39 @@ export const AnxietySlider = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="grid place-items-center py-1">
-        <div className="relative grid place-items-center">
-          <div
-            className="absolute size-24 rounded-full opacity-50 blur-2xl transition-colors duration-500"
-            style={{ backgroundColor: judgment.accent }}
-          />
-          <span
-            key={judgment.level}
-            role="img"
-            aria-label={judgment.label}
-            className="relative block animate-emoji-pop text-7xl leading-none"
-          >
-            {judgment.emoji}
-          </span>
-        </div>
+        {isAfter ? (
+          // 実施後は値で表情・色を変えない。「一歩進んだ」を語る固定モチーフに寄せ、感情を採点しない。
+          <div className="relative grid place-items-center">
+            <div className="absolute size-24 rounded-full bg-accent/25 opacity-50 blur-2xl" />
+            <Sprout
+              size={64}
+              aria-hidden="true"
+              className="relative block text-accent"
+            />
+          </div>
+        ) : (
+          <div className="relative grid place-items-center">
+            <div
+              className="absolute size-24 rounded-full opacity-50 blur-2xl transition-colors duration-500"
+              style={{ backgroundColor: judgment.accent }}
+            />
+            <span
+              key={judgment.level}
+              role="img"
+              aria-label={judgment.label}
+              className="relative block animate-emoji-pop text-7xl leading-none"
+            >
+              {judgment.emoji}
+            </span>
+          </div>
+        )}
       </div>
 
       <div>
         <div className="mb-2 flex items-end justify-end">
           <span
-            className="text-base font-bold tabular-nums transition-colors duration-500"
-            style={{ color: judgment.text }}
+            className={`text-base font-bold tabular-nums transition-colors duration-500 ${isAfter ? 'text-ink' : ''}`}
+            style={isAfter ? undefined : { color: judgment.text }}
           >
             {value}
           </span>
@@ -75,7 +91,9 @@ export const AnxietySlider = ({
           onChange={(event) => onChange(Number(event.target.value))}
           aria-label="不安の強さ（0〜100）"
           aria-invalid={invalid}
-          aria-valuetext={`${value}（${judgment.label}）`}
+          aria-valuetext={
+            isAfter ? `${value}` : `${value}（${judgment.label}）`
+          }
           className="ippo-anxiety-range h-9 w-full cursor-pointer appearance-none rounded-full"
           style={{ background: trackGradient }}
         />
@@ -98,23 +116,38 @@ export const AnxietySlider = ({
         </p>
       </div>
 
-      <div
-        className="rounded-2xl p-4 transition-colors duration-500"
-        style={{
-          backgroundColor: judgment.tint,
-          border: `1px solid ${judgment.accent}55`,
-        }}
-        role="status"
-        aria-live="polite"
-      >
-        <p className="font-bold" style={{ color: judgment.text }}>
-          {judgment.label}
-        </p>
-        <p className="mt-1 text-sm text-ink">{judgment.message}</p>
-        <p className="mt-1 text-xs leading-relaxed text-ink-soft">
-          {judgment.recommendation}
-        </p>
-      </div>
+      {isAfter ? (
+        <div
+          className="rounded-2xl bg-white/60 p-4"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="text-sm leading-relaxed text-ink">
+            下がっていても、下がっていなくても大丈夫。数字より、やってみて気づいたことのほうが大切です。
+          </p>
+          <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
+            不安が残っていても、価値に向かって動けたことに変わりはありません。
+          </p>
+        </div>
+      ) : (
+        <div
+          className="rounded-2xl p-4 transition-colors duration-500"
+          style={{
+            backgroundColor: judgment.tint,
+            border: `1px solid ${judgment.accent}55`,
+          }}
+          role="status"
+          aria-live="polite"
+        >
+          <p className="font-bold" style={{ color: judgment.text }}>
+            {judgment.label}
+          </p>
+          <p className="mt-1 text-sm text-ink">{judgment.message}</p>
+          <p className="mt-1 text-xs leading-relaxed text-ink-soft">
+            {judgment.recommendation}
+          </p>
+        </div>
+      )}
 
       {judgment.level === 'hard' && (
         <button
@@ -152,8 +185,9 @@ export const AnxietySlider = ({
       )}
 
       <p className="text-center text-xs leading-relaxed text-ink-soft">
-        ※
-        挑戦の強さの目安です。最適な強さは人によって異なり、専門家の判断に代わるものではありません。
+        {isAfter
+          ? '※ いまの気持ちの目安です。数字の大小で、取り組みの価値は変わりません。'
+          : '※ 挑戦の強さの目安です。最適な強さは人によって異なり、専門家の判断に代わるものではありません。'}
       </p>
 
       <Modal
