@@ -114,15 +114,13 @@ describe('ValuesPage', () => {
     expect(await screen.findByText('ふたつめ')).toBeInTheDocument()
   })
 
-  test('価値の例チップをタップすると入力欄に下書きされる', async () => {
-    const user = userEvent.setup()
+  test('うまく書けないときは /learn への導線を表示する', async () => {
     renderWithProviders(<ValuesPage />)
 
-    await user.click(
-      await screen.findByRole('button', { name: '誠実に取り組む' }),
-    )
-
-    expect(screen.getByLabelText('新しい価値')).toHaveValue('誠実に取り組む')
+    const link = await screen.findByRole('link', {
+      name: 'うまく書けないときは：価値ってなんだろう？',
+    })
+    expect(link).toHaveAttribute('href', '/learn')
   })
 
   test('取得失敗時はエラーを表示する', async () => {
